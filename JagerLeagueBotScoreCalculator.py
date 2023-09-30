@@ -13,10 +13,14 @@ import json
 
 url_nfl_state= 'https://api.sleeper.app/v1/state/nfl'
 response = requests.get(url_nfl_state)
-#3current_week = response.json()['week']
+fantasy_week = response.json()['week']
 league = 1001613023221522432
 
 current_week = int(input("LMK which week you're interested in seeing data for homie : "))
+while (current_week > int(fantasy_week)) :
+    print ("Sheeeesh I can't predict the future.... yet")
+    current_week = int((input("Wanna try again and give me an actual week: ")))
+
 list_matchups_data = []
 user_data = []
 roster_data = []
