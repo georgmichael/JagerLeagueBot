@@ -18,7 +18,7 @@ league = 1001613023221522432
 
 current_week = int(input("LMK which week you're interested in seeing data for homie : "))
 while (current_week > int(fantasy_week)) :
-    print ("Sheeeesh I can't predict the future.... yet")
+    print ("Sheeeesh I can't predict the future.... yet \n")
     current_week = int((input("Wanna try again and give me an actual week: ")))
 
 list_matchups_data = []
