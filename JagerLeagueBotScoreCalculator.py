@@ -4,7 +4,7 @@ import json
 
 #test league and week
 # league = 865826998382112768
-#current_week = 2
+#current_week = 3
 
 # Get the current week
 # variable: current_week
@@ -13,9 +13,10 @@ import json
 
 url_nfl_state= 'https://api.sleeper.app/v1/state/nfl'
 response = requests.get(url_nfl_state)
-current_week = response.json()['week']
+#3current_week = response.json()['week']
 league = 1001613023221522432
 
+current_week = int(input("LMK which week you're interested in seeing data for homie : "))
 list_matchups_data = []
 user_data = []
 roster_data = []
