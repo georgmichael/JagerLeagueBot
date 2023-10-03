@@ -51,7 +51,6 @@ for matchup in json_matchups:
     elif(target_matchup == str(matchup['matchup_id'])):
         bot_op_id = str(matchup['roster_id'])
         bot_op_score = float(matchup['points'])
-        points.append(matchup['points'])
     else :
         points.append(matchup['points'])
 
