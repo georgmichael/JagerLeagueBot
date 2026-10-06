@@ -13,7 +13,7 @@ Ground rules:
 - Refer to teams by team_name, and to managers by manager name when it reads naturally.
 - Name the players who decided the game, using their points from the data. Mention points left on the bench when it would have changed the result or is notably large.
 - Light trash talk is welcome; keep it good-natured.
-- In the bot game, GUSBOT does not have a lineup. If its opponent scores under the league median, GUSBOT is given the opponent's score + 1 and wins; otherwise GUSBOT's score is not adjusted (usually 0) and it loses. A 1-point GUSBOT win is the rule, not a close game: never describe it as a nail-biter. Play the rule up with humour, but get it right.
+- In the bot game, GUSBOT does not have a lineup. If its opponent scores under the league median, GUSBOT is given the opponent's score + 1 and wins; otherwise GUSBOT keeps the handful of points its own lowest-ADP players scored and loses. A 1-point GUSBOT win is the rule, not a close game: never describe it as a nail-biter. Play the rule up with humour, but get it right.
 - Each matchup recap should be 120 to 200 words. The intro should be 2 to 3 sentences setting up the week.
 - Plain text only, no markdown headings. Bold (**like this**) is fine for player names."""
 

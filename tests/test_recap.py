@@ -23,23 +23,34 @@ def test_bot_found_by_name(data):
     assert week.find_bot_roster_id(data["users"], data["rosters"], data["matchups"]) == 10
 
 
-def test_bot_falls_back_to_only_zero_score():
-    users = [{"user_id": "a", "display_name": "someone"}, {"user_id": "b", "display_name": "renamed"}]
-    rosters = [{"roster_id": 1, "owner_id": "a"}, {"roster_id": 2, "owner_id": "b"}]
-    matchups = [{"roster_id": 1, "points": 99.1}, {"roster_id": 2, "points": 0}]
-    assert week.find_bot_roster_id(users, rosters, matchups) == 2
+def roster(rid, ppts, ppts_decimal=0):
+    return {"roster_id": rid, "owner_id": f"o{rid}", "settings": {"ppts": ppts, "ppts_decimal": ppts_decimal}}
+
+
+def test_bot_falls_back_to_tiny_potential_points():
+    # Real 2026 numbers: the bot's best possible lineup over 4 weeks was 10.60
+    # even though the commissioner had raised its points for to 212.
+    rosters = [roster(1, 462, 68), roster(2, 488, 94), roster(10, 10, 60)]
+    assert week.find_bot_roster_id([], rosters, []) == 10
 
 
 def test_bot_not_guessed_before_games_are_played():
-    users = [{"user_id": "a", "display_name": "x"}, {"user_id": "b", "display_name": "y"}]
-    rosters = [{"roster_id": 1, "owner_id": "a"}, {"roster_id": 2, "owner_id": "b"}]
-    matchups = [{"roster_id": 1, "points": 0}, {"roster_id": 2, "points": 0}]
-    assert week.find_bot_roster_id(users, rosters, matchups) is None
+    assert week.find_bot_roster_id([], [roster(1, 0), roster(2, 0)], []) is None
+
+
+def test_bot_roster_id_override(monkeypatch):
+    monkeypatch.setattr(week, "BOT_ROSTER_ID", "7")
+    assert week.find_bot_roster_id([], [], []) == 7
+
+
+def test_commissioner_override_is_used():
+    assert week.team_points({"points": 3.2, "custom_points": 141.5}) == 141.5
+    assert week.team_points({"points": 3.2, "custom_points": None}) == 3.2
 
 
 def bot_week(opponent_points):
     return [
-        {"roster_id": 1, "matchup_id": 1, "points": 0},
+        {"roster_id": 1, "matchup_id": 1, "points": 2.4},
         {"roster_id": 2, "matchup_id": 1, "points": opponent_points},  # excluded from the median
         {"roster_id": 3, "matchup_id": 2, "points": 100},
         {"roster_id": 4, "matchup_id": 2, "points": 110},
@@ -54,11 +65,17 @@ def test_median_excludes_bot_and_opponent():
 
 
 def test_bot_keeps_own_score_when_opponent_beats_median():
-    assert week.bot_score(bot_week(200), 1)[0] == 0
+    assert week.bot_score(bot_week(200), 1)[0] == 2.4
 
 
 def test_bot_keeps_own_score_when_opponent_ties_median():
-    assert week.bot_score(bot_week(100), 1)[0] == 0
+    assert week.bot_score(bot_week(100), 1)[0] == 2.4
+
+
+def test_median_uses_commissioner_overrides():
+    matchups = bot_week(200)
+    matchups[2]["custom_points"] = 130  # roster 3: 100 -> 130
+    assert week.league_median(matchups, 1)[0] == 110
 
 
 def test_bot_wins_by_one_when_opponent_is_under_median():

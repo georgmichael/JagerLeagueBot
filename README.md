@@ -1,5 +1,5 @@
 # JagerLeagueBot
-Since we're down 1 person, we use a bot (gusonthego) to fill in the gap. However, gusonthego only drafts the lowest possible ADP possible which means their score for the season will be 0. To help them out, we compare gusonthego's opponent to the median score of all other teams that week (excluding gusonthego and the opponent). If the opponent scores under that median, gusonthego gets the opponent's score + 1 and wins. Otherwise gusonthego's score is left as is and it loses.
+Since we're down 1 person, we use a bot (gusonthego) to fill in the gap. However, gusonthego only drafts the lowest possible ADP possible which means they barely score any points. To help them out, we compare gusonthego's opponent to the median score of all other teams that week (excluding gusonthego and the opponent). If the opponent scores under that median, gusonthego gets the opponent's score + 1 and wins. Otherwise gusonthego's score is left as is and it loses.
 
 ## Bot score
 
@@ -19,7 +19,7 @@ Every Tuesday morning, GitHub Actions pulls the last completed week from Sleeper
 | `ANTHROPIC_API_KEY` | Secret | Claude API key from console.anthropic.com |
 | `DISCORD_WEBHOOK_URL` | Secret | Discord channel → Edit Channel → Integrations → Webhooks → New Webhook → Copy URL |
 
-The bot is found by its Sleeper name (`gusonthego`). Set the `JAGER_BOT_NAME` environment variable if that changes.
+The bot is found by its Sleeper name (`gusonthego`). To pin it exactly, add a `JAGER_BOT_ROSTER_ID` variable (roster 10 in the 2026 league). Scores use the commissioner's override when Sleeper has one.
 
 ### Running it by hand
 

@@ -2,7 +2,7 @@ import argparse
 import os
 
 from jagerbot import sleeper
-from jagerbot.week import find_bot_roster_id, bot_score
+from jagerbot.week import find_bot_roster_id, bot_score, team_points
 
 parser = argparse.ArgumentParser(description="Work out GUSBOT's score and result for a week.")
 parser.add_argument("--week", type=int, help="Week to score (prompted for if omitted)")
@@ -27,7 +27,7 @@ if bot_roster_id is None:
 bot_points, opponent = bot_score(matchups, bot_roster_id)
 if opponent is None:
     raise SystemExit("GUSBOT doesn't have an opponent this week.")
-bot_op_score = float(opponent['points'] or 0)
+bot_op_score = team_points(opponent)
 
 owner_id = next(r['owner_id'] for r in rosters if r['roster_id'] == opponent['roster_id'])
 bot_op_name = next((u['display_name'] for u in users if u['user_id'] == owner_id), "Wow")

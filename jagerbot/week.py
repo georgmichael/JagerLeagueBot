@@ -3,9 +3,11 @@
 import os
 import statistics
 
-# The bot fills the empty league slot and never scores. Matched against the
-# Sleeper display name or team name, case-insensitively.
+# The bot fills the empty league slot with a lowest-ADP roster that barely scores.
+# Found by roster ID if JAGER_BOT_ROSTER_ID is set, else by Sleeper display name
+# or team name (case-insensitive).
 BOT_NAME = os.environ.get("JAGER_BOT_NAME", "gusonthego")
+BOT_ROSTER_ID = os.environ.get("JAGER_BOT_ROSTER_ID")
 BOT_LABEL = "GUSBOT"
 
 SLOT_ELIGIBILITY = {
@@ -28,6 +30,17 @@ SLOT_ELIGIBILITY = {
 
 def _points(value):
     return round(float(value or 0), 2)
+
+
+def team_points(matchup):
+    """A team's score for the week, including any commissioner override."""
+    custom = matchup.get("custom_points")
+    return _points(custom if custom is not None else matchup.get("points"))
+
+
+def _potential_points(roster):
+    s = roster.get("settings") or {}
+    return (s.get("ppts") or 0) + (s.get("ppts_decimal") or 0) / 100
 
 
 def player_info(players, player_id):
@@ -60,6 +73,8 @@ def optimal_points(roster_positions, players_points, players):
 
 
 def find_bot_roster_id(users, rosters, matchups):
+    if BOT_ROSTER_ID:
+        return int(BOT_ROSTER_ID)
     names = {
         u["user_id"]: {(u.get("display_name") or "").lower(), ((u.get("metadata") or {}).get("team_name") or "").lower()}
         for u in users
@@ -67,11 +82,12 @@ def find_bot_roster_id(users, rosters, matchups):
     for roster in rosters:
         if BOT_NAME.lower() in names.get(roster.get("owner_id"), set()):
             return roster["roster_id"]
-    # Fallback (the original heuristic): the only team that scored zero in a played week.
-    zero = [m["roster_id"] for m in matchups if _points(m.get("points")) == 0]
-    played = any(_points(m.get("points")) > 0 for m in matchups)
-    if played and len(zero) == 1:
-        return zero[0]
+    # Fallback: the bot's best possible lineup all season (Sleeper's "ppts") is a
+    # tiny fraction of anyone else's, whatever the commissioner sets its score to.
+    ranked = sorted(rosters, key=_potential_points)
+    if len(ranked) >= 2 and _potential_points(ranked[1]) > 0:
+        if _potential_points(ranked[0]) < 0.25 * _potential_points(ranked[1]):
+            return ranked[0]["roster_id"]
     return None
 
 
@@ -85,17 +101,17 @@ def league_median(matchups, bot_roster_id):
         None,
     )
     excluded = {bot_roster_id, opponent["roster_id"] if opponent else None}
-    points = [_points(m.get("points")) for m in matchups if m["roster_id"] not in excluded]
+    points = [team_points(m) for m in matchups if m["roster_id"] not in excluded]
     return round(statistics.median(points), 2), opponent
 
 
 def bot_score(matchups, bot_roster_id):
     """The bot's score. If its opponent scores under the median, the bot wins by
-    exactly 1 point (opponent + 1). Otherwise it keeps its own Sleeper score and loses."""
+    exactly 1 point (opponent + 1). Otherwise its players' raw score stands and it loses."""
     median, opponent = league_median(matchups, bot_roster_id)
     if median is None or opponent is None:
         return median, opponent
-    opponent_points = _points(opponent.get("points"))
+    opponent_points = team_points(opponent)
     if opponent_points < median:
         return round(opponent_points + 1, 2), opponent
     bot = next(m for m in matchups if m["roster_id"] == bot_roster_id)
@@ -103,7 +119,7 @@ def bot_score(matchups, bot_roster_id):
 
 
 def week_has_scores(matchups, bot_roster_id=None):
-    return any(_points(m.get("points")) > 0 for m in matchups if m["roster_id"] != bot_roster_id)
+    return any(team_points(m) > 0 for m in matchups if m["roster_id"] != bot_roster_id)
 
 
 def build_week(data, include_records=False):
@@ -137,14 +153,14 @@ def build_week(data, include_records=False):
             entry["note"] = (
                 "The bot does not play. If its opponent scores under the league median "
                 "(excluding the bot and its opponent), the bot is given the opponent's score + 1 "
-                "and wins; otherwise its score is not adjusted and it loses."
+                "and wins; otherwise it keeps the few points its own players scored and loses."
             )
             return entry
 
         players_points = {pid: _points(p) for pid, p in (m.get("players_points") or {}).items()}
         starters = [pid for pid in (m.get("starters") or []) if pid and pid != "0"]
         starter_ids = set(starters)
-        entry["points"] = _points(m.get("points"))
+        entry["points"] = team_points(m)
         entry["starters"] = [
             {**{k: v for k, v in player_info(players, pid).items() if k != "fantasy_positions"}, "points": players_points.get(pid, 0.0)}
             for pid in starters
