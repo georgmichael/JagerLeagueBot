@@ -75,7 +75,7 @@ def find_bot_roster_id(users, rosters, matchups):
     return None
 
 
-def bot_score(matchups, bot_roster_id):
+def league_median(matchups, bot_roster_id):
     """Median of every real team's score, excluding the bot and the bot's opponent."""
     bot = next((m for m in matchups if m["roster_id"] == bot_roster_id), None)
     if bot is None:
@@ -87,6 +87,18 @@ def bot_score(matchups, bot_roster_id):
     excluded = {bot_roster_id, opponent["roster_id"] if opponent else None}
     points = [_points(m.get("points")) for m in matchups if m["roster_id"] not in excluded]
     return round(statistics.median(points), 2), opponent
+
+
+def bot_score(matchups, bot_roster_id):
+    """The bot's score. If its opponent scores under the median, the bot wins by
+    exactly 1 point (opponent + 1). Otherwise it takes the median and loses."""
+    median, opponent = league_median(matchups, bot_roster_id)
+    if median is None or opponent is None:
+        return median, opponent
+    opponent_points = _points(opponent.get("points"))
+    if opponent_points < median:
+        return round(opponent_points + 1, 2), opponent
+    return median, opponent
 
 
 def week_has_scores(matchups, bot_roster_id=None):
@@ -102,7 +114,8 @@ def build_week(data, include_records=False):
     roster_positions = league.get("roster_positions", [])
 
     bot_roster_id = find_bot_roster_id(data["users"], data["rosters"], matchups)
-    median, _ = bot_score(matchups, bot_roster_id) if bot_roster_id is not None else (None, None)
+    median, _ = league_median(matchups, bot_roster_id) if bot_roster_id is not None else (None, None)
+    gus_points, _ = bot_score(matchups, bot_roster_id) if bot_roster_id is not None else (None, None)
 
     def team(m):
         roster = rosters_by_id.get(m["roster_id"], {})
@@ -119,8 +132,12 @@ def build_week(data, include_records=False):
             s = roster.get("settings", {})
             entry["season_record"] = f"{s.get('wins', 0)}-{s.get('losses', 0)}" + (f"-{s['ties']}" if s.get("ties") else "")
         if is_bot:
-            entry["points"] = median
-            entry["note"] = "The bot does not play. It is assigned the median score of the other teams (excluding its opponent)."
+            entry["points"] = gus_points
+            entry["note"] = (
+                "The bot does not play. If its opponent scores under the league median "
+                "(excluding the bot and its opponent), the bot is given the opponent's score + 1 "
+                "and wins; otherwise it is given the median and loses."
+            )
             return entry
 
         players_points = {pid: _points(p) for pid, p in (m.get("players_points") or {}).items()}
@@ -168,7 +185,7 @@ def build_week(data, include_records=False):
         "league_name": league.get("name", "Jager League"),
         "season": league.get("season"),
         "week": data["week"],
-        "bot_median_score": median,
+        "league_median": median,
         "matchups": results,
         "awards": awards(results),
     }

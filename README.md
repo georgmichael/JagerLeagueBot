@@ -1,5 +1,5 @@
 # JagerLeagueBot
-Since we're down 1 person, we use a bot (gusonthego) to fill in the gap. However, gusonthego only drafts the lowest possible ADP possible which means their score for the season will be 0. To help them out, we assign the median score of all other teams for that week (excluding the bot's opponent) to gusonthego.
+Since we're down 1 person, we use a bot (gusonthego) to fill in the gap. However, gusonthego only drafts the lowest possible ADP possible which means their score for the season will be 0. To help them out, we compare gusonthego's opponent to the median score of all other teams that week (excluding gusonthego and the opponent). If the opponent scores under that median, gusonthego gets the opponent's score + 1 and wins. Otherwise gusonthego gets the median and loses.
 
 ## Bot score
 

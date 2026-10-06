@@ -37,17 +37,32 @@ def test_bot_not_guessed_before_games_are_played():
     assert week.find_bot_roster_id(users, rosters, matchups) is None
 
 
-def test_bot_score_is_median_excluding_bot_and_opponent():
-    matchups = [
+def bot_week(opponent_points):
+    return [
         {"roster_id": 1, "matchup_id": 1, "points": 0},
-        {"roster_id": 2, "matchup_id": 1, "points": 200},  # opponent, excluded
+        {"roster_id": 2, "matchup_id": 1, "points": opponent_points},  # excluded from the median
         {"roster_id": 3, "matchup_id": 2, "points": 100},
         {"roster_id": 4, "matchup_id": 2, "points": 110},
         {"roster_id": 5, "matchup_id": 3, "points": 90},
     ]
-    score, opponent = week.bot_score(matchups, 1)
-    assert score == 100
+
+
+def test_median_excludes_bot_and_opponent():
+    median, opponent = week.league_median(bot_week(200), 1)
+    assert median == 100
     assert opponent["roster_id"] == 2
+
+
+def test_bot_loses_with_median_when_opponent_beats_it():
+    assert week.bot_score(bot_week(200), 1)[0] == 100
+
+
+def test_bot_loses_with_median_when_opponent_ties_it():
+    assert week.bot_score(bot_week(100), 1)[0] == 100
+
+
+def test_bot_wins_by_one_when_opponent_is_under_median():
+    assert week.bot_score(bot_week(85.42), 1)[0] == 86.42
 
 
 def test_optimal_points_uses_flex_for_best_leftover():
@@ -64,7 +79,7 @@ def test_build_week_from_fixture(data):
     bot_game = [m for m in facts["matchups"] if m["is_bot_game"]]
     assert len(bot_game) == 1
     bot = next(t for t in (bot_game[0]["winner"], bot_game[0]["loser"]) if t["is_bot"])
-    assert bot["points"] == facts["bot_median_score"]
+    assert bot["points"] == week.bot_score(data["matchups"], 10)[0]
     for m in facts["matchups"]:
         assert m["winner"]["points"] >= m["loser"]["points"]
         for t in (m["winner"], m["loser"]):
