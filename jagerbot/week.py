@@ -91,14 +91,15 @@ def league_median(matchups, bot_roster_id):
 
 def bot_score(matchups, bot_roster_id):
     """The bot's score. If its opponent scores under the median, the bot wins by
-    exactly 1 point (opponent + 1). Otherwise it takes the median and loses."""
+    exactly 1 point (opponent + 1). Otherwise it keeps its own Sleeper score and loses."""
     median, opponent = league_median(matchups, bot_roster_id)
     if median is None or opponent is None:
         return median, opponent
     opponent_points = _points(opponent.get("points"))
     if opponent_points < median:
         return round(opponent_points + 1, 2), opponent
-    return median, opponent
+    bot = next(m for m in matchups if m["roster_id"] == bot_roster_id)
+    return _points(bot.get("points")), opponent
 
 
 def week_has_scores(matchups, bot_roster_id=None):
@@ -136,7 +137,7 @@ def build_week(data, include_records=False):
             entry["note"] = (
                 "The bot does not play. If its opponent scores under the league median "
                 "(excluding the bot and its opponent), the bot is given the opponent's score + 1 "
-                "and wins; otherwise it is given the median and loses."
+                "and wins; otherwise its score is not adjusted and it loses."
             )
             return entry
 

@@ -53,12 +53,12 @@ def test_median_excludes_bot_and_opponent():
     assert opponent["roster_id"] == 2
 
 
-def test_bot_loses_with_median_when_opponent_beats_it():
-    assert week.bot_score(bot_week(200), 1)[0] == 100
+def test_bot_keeps_own_score_when_opponent_beats_median():
+    assert week.bot_score(bot_week(200), 1)[0] == 0
 
 
-def test_bot_loses_with_median_when_opponent_ties_it():
-    assert week.bot_score(bot_week(100), 1)[0] == 100
+def test_bot_keeps_own_score_when_opponent_ties_median():
+    assert week.bot_score(bot_week(100), 1)[0] == 0
 
 
 def test_bot_wins_by_one_when_opponent_is_under_median():
