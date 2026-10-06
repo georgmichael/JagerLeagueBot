@@ -1,0 +1,1961 @@
+{
+ "week": 5,
+ "league": {
+  "name": "Jager League",
+  "season": "2026",
+  "roster_positions": [
+   "QB",
+   "RB",
+   "RB",
+   "WR",
+   "WR",
+   "TE",
+   "FLEX",
+   "K",
+   "DEF",
+   "BN",
+   "BN",
+   "BN",
+   "BN",
+   "BN",
+   "BN"
+  ]
+ },
+ "users": [
+  {
+   "user_id": "u1",
+   "display_name": "jagerbomb",
+   "metadata": {
+    "team_name": "Bomb Squad"
+   }
+  },
+  {
+   "user_id": "u2",
+   "display_name": "tailgatetony",
+   "metadata": {
+    "team_name": "Tony's Tailgaters"
+   }
+  },
+  {
+   "user_id": "u3",
+   "display_name": "fourthandlong",
+   "metadata": {
+    "team_name": "Punt Formation"
+   }
+  },
+  {
+   "user_id": "u4",
+   "display_name": "waiverwire_wendy",
+   "metadata": {
+    "team_name": "Wendy's Waivers"
+   }
+  },
+  {
+   "user_id": "u5",
+   "display_name": "bigplaybrenda",
+   "metadata": {}
+  },
+  {
+   "user_id": "u6",
+   "display_name": "commish_mike",
+   "metadata": {
+    "team_name": "Commissioner's Pick"
+   }
+  },
+  {
+   "user_id": "u7",
+   "display_name": "dynastydave",
+   "metadata": {
+    "team_name": "Dave's Dynasty"
+   }
+  },
+  {
+   "user_id": "u8",
+   "display_name": "sackmaster",
+   "metadata": {
+    "team_name": "Sack Masters"
+   }
+  },
+  {
+   "user_id": "u9",
+   "display_name": "fumbleking",
+   "metadata": {
+    "team_name": "Fumble Kings"
+   }
+  },
+  {
+   "user_id": "u10",
+   "display_name": "gusonthego",
+   "metadata": {}
+  }
+ ],
+ "rosters": [
+  {
+   "roster_id": 1,
+   "owner_id": "u1",
+   "settings": {
+    "wins": 4,
+    "losses": 3,
+    "ties": 0
+   }
+  },
+  {
+   "roster_id": 2,
+   "owner_id": "u2",
+   "settings": {
+    "wins": 1,
+    "losses": 0,
+    "ties": 0
+   }
+  },
+  {
+   "roster_id": 3,
+   "owner_id": "u3",
+   "settings": {
+    "wins": 2,
+    "losses": 0,
+    "ties": 0
+   }
+  },
+  {
+   "roster_id": 4,
+   "owner_id": "u4",
+   "settings": {
+    "wins": 2,
+    "losses": 0,
+    "ties": 0
+   }
+  },
+  {
+   "roster_id": 5,
+   "owner_id": "u5",
+   "settings": {
+    "wins": 1,
+    "losses": 3,
+    "ties": 0
+   }
+  },
+  {
+   "roster_id": 6,
+   "owner_id": "u6",
+   "settings": {
+    "wins": 2,
+    "losses": 3,
+    "ties": 0
+   }
+  },
+  {
+   "roster_id": 7,
+   "owner_id": "u7",
+   "settings": {
+    "wins": 1,
+    "losses": 2,
+    "ties": 0
+   }
+  },
+  {
+   "roster_id": 8,
+   "owner_id": "u8",
+   "settings": {
+    "wins": 4,
+    "losses": 2,
+    "ties": 0
+   }
+  },
+  {
+   "roster_id": 9,
+   "owner_id": "u9",
+   "settings": {
+    "wins": 4,
+    "losses": 1,
+    "ties": 0
+   }
+  },
+  {
+   "roster_id": 10,
+   "owner_id": "u10",
+   "settings": {
+    "wins": 1,
+    "losses": 1,
+    "ties": 0
+   }
+  }
+ ],
+ "matchups": [
+  {
+   "roster_id": 1,
+   "matchup_id": 1,
+   "points": 142.2,
+   "starters": [
+    "1000",
+    "1002",
+    "1003",
+    "1006",
+    "1007",
+    "1011",
+    "1008",
+    "1013",
+    "DEN"
+   ],
+   "starters_points": [
+    21.2,
+    8.9,
+    31.92,
+    22.65,
+    10.09,
+    24.52,
+    7.35,
+    12.16,
+    3.41
+   ],
+   "players": [
+    "1000",
+    "1001",
+    "1002",
+    "1003",
+    "1004",
+    "1005",
+    "1006",
+    "1007",
+    "1008",
+    "1009",
+    "1010",
+    "1011",
+    "1012",
+    "1013",
+    "DEN"
+   ],
+   "players_points": {
+    "1000": 21.2,
+    "1001": 14.63,
+    "1002": 8.9,
+    "1003": 31.92,
+    "1004": 31.86,
+    "1005": 26.89,
+    "1006": 22.65,
+    "1007": 10.09,
+    "1008": 7.35,
+    "1009": 9.25,
+    "1010": 2.25,
+    "1011": 24.52,
+    "1012": 12.81,
+    "1013": 12.16,
+    "DEN": 3.41
+   }
+  },
+  {
+   "roster_id": 2,
+   "matchup_id": 1,
+   "points": 120.33,
+   "starters": [
+    "1014",
+    "1016",
+    "1017",
+    "1020",
+    "1021",
+    "1025",
+    "1022",
+    "1027",
+    "BAL"
+   ],
+   "starters_points": [
+    31.93,
+    5.99,
+    31.87,
+    1.35,
+    4.68,
+    26.57,
+    14.13,
+    2.89,
+    0.92
+   ],
+   "players": [
+    "1014",
+    "1015",
+    "1016",
+    "1017",
+    "1018",
+    "1019",
+    "1020",
+    "1021",
+    "1022",
+    "1023",
+    "1024",
+    "1025",
+    "1026",
+    "1027",
+    "BAL"
+   ],
+   "players_points": {
+    "1014": 31.93,
+    "1015": 0.63,
+    "1016": 5.99,
+    "1017": 31.87,
+    "1018": 19.26,
+    "1019": 18.46,
+    "1020": 1.35,
+    "1021": 4.68,
+    "1022": 14.13,
+    "1023": 0.31,
+    "1024": 19.53,
+    "1025": 26.57,
+    "1026": 12.36,
+    "1027": 2.89,
+    "BAL": 0.92
+   }
+  },
+  {
+   "roster_id": 3,
+   "matchup_id": 2,
+   "points": 146.35,
+   "starters": [
+    "1028",
+    "1030",
+    "1031",
+    "1034",
+    "1035",
+    "1039",
+    "1036",
+    "1041",
+    "PIT"
+   ],
+   "starters_points": [
+    31.27,
+    15.34,
+    20.91,
+    6.8,
+    29.28,
+    7.97,
+    23.97,
+    5.38,
+    5.43
+   ],
+   "players": [
+    "1028",
+    "1029",
+    "1030",
+    "1031",
+    "1032",
+    "1033",
+    "1034",
+    "1035",
+    "1036",
+    "1037",
+    "1038",
+    "1039",
+    "1040",
+    "1041",
+    "PIT"
+   ],
+   "players_points": {
+    "1028": 31.27,
+    "1029": 4.04,
+    "1030": 15.34,
+    "1031": 20.91,
+    "1032": 19.71,
+    "1033": 2.37,
+    "1034": 6.8,
+    "1035": 29.28,
+    "1036": 23.97,
+    "1037": 2.21,
+    "1038": 13.17,
+    "1039": 7.97,
+    "1040": 1.49,
+    "1041": 5.38,
+    "PIT": 5.43
+   }
+  },
+  {
+   "roster_id": 4,
+   "matchup_id": 2,
+   "points": 97.5,
+   "starters": [
+    "1042",
+    "1044",
+    "1045",
+    "1048",
+    "1049",
+    "1053",
+    "1050",
+    "1055",
+    "HOU"
+   ],
+   "starters_points": [
+    0.4,
+    2.9,
+    3.7,
+    10.56,
+    29.9,
+    17.32,
+    22.21,
+    8.17,
+    2.34
+   ],
+   "players": [
+    "1042",
+    "1043",
+    "1044",
+    "1045",
+    "1046",
+    "1047",
+    "1048",
+    "1049",
+    "1050",
+    "1051",
+    "1052",
+    "1053",
+    "1054",
+    "1055",
+    "HOU"
+   ],
+   "players_points": {
+    "1042": 0.4,
+    "1043": 2.31,
+    "1044": 2.9,
+    "1045": 3.7,
+    "1046": 8.23,
+    "1047": 13.32,
+    "1048": 10.56,
+    "1049": 29.9,
+    "1050": 22.21,
+    "1051": 14.65,
+    "1052": 14.8,
+    "1053": 17.32,
+    "1054": 16.6,
+    "1055": 8.17,
+    "HOU": 2.34
+   }
+  },
+  {
+   "roster_id": 5,
+   "matchup_id": 3,
+   "points": 116.32,
+   "starters": [
+    "1056",
+    "1058",
+    "1059",
+    "1062",
+    "1063",
+    "1067",
+    "1064",
+    "1069",
+    "MIN"
+   ],
+   "starters_points": [
+    20.02,
+    10.09,
+    26.85,
+    2.39,
+    1.01,
+    18.26,
+    27.93,
+    11.5,
+    -1.73
+   ],
+   "players": [
+    "1056",
+    "1057",
+    "1058",
+    "1059",
+    "1060",
+    "1061",
+    "1062",
+    "1063",
+    "1064",
+    "1065",
+    "1066",
+    "1067",
+    "1068",
+    "1069",
+    "MIN"
+   ],
+   "players_points": {
+    "1056": 20.02,
+    "1057": 15.8,
+    "1058": 10.09,
+    "1059": 26.85,
+    "1060": 31.43,
+    "1061": 14.48,
+    "1062": 2.39,
+    "1063": 1.01,
+    "1064": 27.93,
+    "1065": 1.33,
+    "1066": 22.68,
+    "1067": 18.26,
+    "1068": 9.89,
+    "1069": 11.5,
+    "MIN": -1.73
+   }
+  },
+  {
+   "roster_id": 6,
+   "matchup_id": 3,
+   "points": 136.86,
+   "starters": [
+    "1070",
+    "1072",
+    "1073",
+    "1076",
+    "1077",
+    "1081",
+    "1078",
+    "1083",
+    "NYJ"
+   ],
+   "starters_points": [
+    14.84,
+    6.56,
+    23.1,
+    22.97,
+    6.83,
+    17.18,
+    28.8,
+    5.84,
+    10.74
+   ],
+   "players": [
+    "1070",
+    "1071",
+    "1072",
+    "1073",
+    "1074",
+    "1075",
+    "1076",
+    "1077",
+    "1078",
+    "1079",
+    "1080",
+    "1081",
+    "1082",
+    "1083",
+    "NYJ"
+   ],
+   "players_points": {
+    "1070": 14.84,
+    "1071": 20.84,
+    "1072": 6.56,
+    "1073": 23.1,
+    "1074": 26.19,
+    "1075": 20.53,
+    "1076": 22.97,
+    "1077": 6.83,
+    "1078": 28.8,
+    "1079": 31.38,
+    "1080": 31.28,
+    "1081": 17.18,
+    "1082": 25.31,
+    "1083": 5.84,
+    "NYJ": 10.74
+   }
+  },
+  {
+   "roster_id": 7,
+   "matchup_id": 4,
+   "points": 114.35,
+   "starters": [
+    "1084",
+    "1086",
+    "1087",
+    "1090",
+    "1091",
+    "1095",
+    "1092",
+    "1097",
+    "CLE"
+   ],
+   "starters_points": [
+    17.15,
+    19.37,
+    0.89,
+    12.82,
+    25.63,
+    2.11,
+    18.01,
+    6.97,
+    11.4
+   ],
+   "players": [
+    "1084",
+    "1085",
+    "1086",
+    "1087",
+    "1088",
+    "1089",
+    "1090",
+    "1091",
+    "1092",
+    "1093",
+    "1094",
+    "1095",
+    "1096",
+    "1097",
+    "CLE"
+   ],
+   "players_points": {
+    "1084": 17.15,
+    "1085": 16.1,
+    "1086": 19.37,
+    "1087": 0.89,
+    "1088": 31.02,
+    "1089": 16.51,
+    "1090": 12.82,
+    "1091": 25.63,
+    "1092": 18.01,
+    "1093": 15.71,
+    "1094": 22.11,
+    "1095": 2.11,
+    "1096": 17.24,
+    "1097": 6.97,
+    "CLE": 11.4
+   }
+  },
+  {
+   "roster_id": 8,
+   "matchup_id": 4,
+   "points": 142.87,
+   "starters": [
+    "1098",
+    "1100",
+    "1101",
+    "1104",
+    "1105",
+    "1109",
+    "1106",
+    "1111",
+    "SEA"
+   ],
+   "starters_points": [
+    7.45,
+    25.94,
+    28.89,
+    29.53,
+    6.98,
+    7.66,
+    31.95,
+    5.11,
+    -0.64
+   ],
+   "players": [
+    "1098",
+    "1099",
+    "1100",
+    "1101",
+    "1102",
+    "1103",
+    "1104",
+    "1105",
+    "1106",
+    "1107",
+    "1108",
+    "1109",
+    "1110",
+    "1111",
+    "SEA"
+   ],
+   "players_points": {
+    "1098": 7.45,
+    "1099": 23.7,
+    "1100": 25.94,
+    "1101": 28.89,
+    "1102": 10.11,
+    "1103": 10.08,
+    "1104": 29.53,
+    "1105": 6.98,
+    "1106": 31.95,
+    "1107": 28.4,
+    "1108": 4.29,
+    "1109": 7.66,
+    "1110": 23.25,
+    "1111": 5.11,
+    "SEA": -0.64
+   }
+  },
+  {
+   "roster_id": 9,
+   "matchup_id": 5,
+   "points": 174.02,
+   "starters": [
+    "1112",
+    "1114",
+    "1115",
+    "1118",
+    "1119",
+    "1123",
+    "1120",
+    "1125",
+    "MIA"
+   ],
+   "starters_points": [
+    19.36,
+    25.36,
+    10.36,
+    28.02,
+    29.08,
+    18.71,
+    30.07,
+    11.15,
+    1.91
+   ],
+   "players": [
+    "1112",
+    "1113",
+    "1114",
+    "1115",
+    "1116",
+    "1117",
+    "1118",
+    "1119",
+    "1120",
+    "1121",
+    "1122",
+    "1123",
+    "1124",
+    "1125",
+    "MIA"
+   ],
+   "players_points": {
+    "1112": 19.36,
+    "1113": 3.03,
+    "1114": 25.36,
+    "1115": 10.36,
+    "1116": 2.71,
+    "1117": 26.94,
+    "1118": 28.02,
+    "1119": 29.08,
+    "1120": 30.07,
+    "1121": 18.23,
+    "1122": 6.11,
+    "1123": 18.71,
+    "1124": 10.91,
+    "1125": 11.15,
+    "MIA": 1.91
+   }
+  },
+  {
+   "roster_id": 10,
+   "matchup_id": 5,
+   "points": 0.0,
+   "starters": [],
+   "starters_points": [],
+   "players": [],
+   "players_points": {}
+  }
+ ],
+ "players": {
+  "DEN": {
+   "first_name": "Denver",
+   "last_name": "Broncos",
+   "position": "DEF",
+   "fantasy_positions": [
+    "DEF"
+   ],
+   "team": "DEN"
+  },
+  "BAL": {
+   "first_name": "Baltimore",
+   "last_name": "Ravens",
+   "position": "DEF",
+   "fantasy_positions": [
+    "DEF"
+   ],
+   "team": "BAL"
+  },
+  "PIT": {
+   "first_name": "Pittsburgh",
+   "last_name": "Steelers",
+   "position": "DEF",
+   "fantasy_positions": [
+    "DEF"
+   ],
+   "team": "PIT"
+  },
+  "HOU": {
+   "first_name": "Houston",
+   "last_name": "Texans",
+   "position": "DEF",
+   "fantasy_positions": [
+    "DEF"
+   ],
+   "team": "HOU"
+  },
+  "MIN": {
+   "first_name": "Minnesota",
+   "last_name": "Vikings",
+   "position": "DEF",
+   "fantasy_positions": [
+    "DEF"
+   ],
+   "team": "MIN"
+  },
+  "NYJ": {
+   "first_name": "New York",
+   "last_name": "Jets",
+   "position": "DEF",
+   "fantasy_positions": [
+    "DEF"
+   ],
+   "team": "NYJ"
+  },
+  "CLE": {
+   "first_name": "Cleveland",
+   "last_name": "Browns",
+   "position": "DEF",
+   "fantasy_positions": [
+    "DEF"
+   ],
+   "team": "CLE"
+  },
+  "SEA": {
+   "first_name": "Seattle",
+   "last_name": "Seahawks",
+   "position": "DEF",
+   "fantasy_positions": [
+    "DEF"
+   ],
+   "team": "SEA"
+  },
+  "MIA": {
+   "first_name": "Miami",
+   "last_name": "Dolphins",
+   "position": "DEF",
+   "fantasy_positions": [
+    "DEF"
+   ],
+   "team": "MIA"
+  },
+  "1000": {
+   "first_name": "Nate",
+   "last_name": "Booker",
+   "position": "QB",
+   "fantasy_positions": [
+    "QB"
+   ],
+   "team": "ATL"
+  },
+  "1001": {
+   "first_name": "Luke",
+   "last_name": "Barnes",
+   "position": "QB",
+   "fantasy_positions": [
+    "QB"
+   ],
+   "team": "HOU"
+  },
+  "1002": {
+   "first_name": "Xavier",
+   "last_name": "Quinlan",
+   "position": "RB",
+   "fantasy_positions": [
+    "RB"
+   ],
+   "team": "DET"
+  },
+  "1003": {
+   "first_name": "Jalen",
+   "last_name": "Rowe",
+   "position": "RB",
+   "fantasy_positions": [
+    "RB"
+   ],
+   "team": "SF"
+  },
+  "1004": {
+   "first_name": "Brady",
+   "last_name": "Vance",
+   "position": "RB",
+   "fantasy_positions": [
+    "RB"
+   ],
+   "team": "HOU"
+  },
+  "1005": {
+   "first_name": "Tyrell",
+   "last_name": "Quinlan",
+   "position": "RB",
+   "fantasy_positions": [
+    "RB"
+   ],
+   "team": "MIN"
+  },
+  "1006": {
+   "first_name": "Nate",
+   "last_name": "Quinlan",
+   "position": "WR",
+   "fantasy_positions": [
+    "WR"
+   ],
+   "team": "DAL"
+  },
+  "1007": {
+   "first_name": "Deshawn",
+   "last_name": "Quinlan",
+   "position": "WR",
+   "fantasy_positions": [
+    "WR"
+   ],
+   "team": "BUF"
+  },
+  "1008": {
+   "first_name": "Rashad",
+   "last_name": "Vance",
+   "position": "WR",
+   "fantasy_positions": [
+    "WR"
+   ],
+   "team": "BUF"
+  },
+  "1009": {
+   "first_name": "Tyrell",
+   "last_name": "Delgado",
+   "position": "WR",
+   "fantasy_positions": [
+    "WR"
+   ],
+   "team": "KC"
+  },
+  "1010": {
+   "first_name": "Malik",
+   "last_name": "Holloway",
+   "position": "WR",
+   "fantasy_positions": [
+    "WR"
+   ],
+   "team": "LAR"
+  },
+  "1011": {
+   "first_name": "Isaiah",
+   "last_name": "Rowe",
+   "position": "TE",
+   "fantasy_positions": [
+    "TE"
+   ],
+   "team": "ATL"
+  },
+  "1012": {
+   "first_name": "Luke",
+   "last_name": "Booker",
+   "position": "TE",
+   "fantasy_positions": [
+    "TE"
+   ],
+   "team": "KC"
+  },
+  "1013": {
+   "first_name": "Kenny",
+   "last_name": "Tatum",
+   "position": "K",
+   "fantasy_positions": [
+    "K"
+   ],
+   "team": "BUF"
+  },
+  "1014": {
+   "first_name": "Luke",
+   "last_name": "Delgado",
+   "position": "QB",
+   "fantasy_positions": [
+    "QB"
+   ],
+   "team": "BUF"
+  },
+  "1015": {
+   "first_name": "Xavier",
+   "last_name": "Lockett",
+   "position": "QB",
+   "fantasy_positions": [
+    "QB"
+   ],
+   "team": "GB"
+  },
+  "1016": {
+   "first_name": "Darius",
+   "last_name": "Mercer",
+   "position": "RB",
+   "fantasy_positions": [
+    "RB"
+   ],
+   "team": "PHI"
+  },
+  "1017": {
+   "first_name": "Jace",
+   "last_name": "Delgado",
+   "position": "RB",
+   "fantasy_positions": [
+    "RB"
+   ],
+   "team": "DAL"
+  },
+  "1018": {
+   "first_name": "Trey",
+   "last_name": "Fontaine",
+   "position": "RB",
+   "fantasy_positions": [
+    "RB"
+   ],
+   "team": "PHI"
+  },
+  "1019": {
+   "first_name": "Kenny",
+   "last_name": "Fontaine",
+   "position": "RB",
+   "fantasy_positions": [
+    "RB"
+   ],
+   "team": "BUF"
+  },
+  "1020": {
+   "first_name": "Cole",
+   "last_name": "Okafor",
+   "position": "WR",
+   "fantasy_positions": [
+    "WR"
+   ],
+   "team": "DET"
+  },
+  "1021": {
+   "first_name": "Andre",
+   "last_name": "Okafor",
+   "position": "WR",
+   "fantasy_positions": [
+    "WR"
+   ],
+   "team": "BUF"
+  },
+  "1022": {
+   "first_name": "Tyrell",
+   "last_name": "Rowe",
+   "position": "WR",
+   "fantasy_positions": [
+    "WR"
+   ],
+   "team": "LAR"
+  },
+  "1023": {
+   "first_name": "Deshawn",
+   "last_name": "Easley",
+   "position": "WR",
+   "fantasy_positions": [
+    "WR"
+   ],
+   "team": "KC"
+  },
+  "1024": {
+   "first_name": "Luke",
+   "last_name": "Whitfield",
+   "position": "WR",
+   "fantasy_positions": [
+    "WR"
+   ],
+   "team": "MIN"
+  },
+  "1025": {
+   "first_name": "Darius",
+   "last_name": "Okafor",
+   "position": "TE",
+   "fantasy_positions": [
+    "TE"
+   ],
+   "team": "MIN"
+  },
+  "1026": {
+   "first_name": "Cole",
+   "last_name": "Delgado",
+   "position": "TE",
+   "fantasy_positions": [
+    "TE"
+   ],
+   "team": "BUF"
+  },
+  "1027": {
+   "first_name": "Trey",
+   "last_name": "Hargrove",
+   "position": "K",
+   "fantasy_positions": [
+    "K"
+   ],
+   "team": "SF"
+  },
+  "1028": {
+   "first_name": "Malik",
+   "last_name": "Graves",
+   "position": "QB",
+   "fantasy_positions": [
+    "QB"
+   ],
+   "team": "CIN"
+  },
+  "1029": {
+   "first_name": "Malik",
+   "last_name": "Rowe",
+   "position": "QB",
+   "fantasy_positions": [
+    "QB"
+   ],
+   "team": "DET"
+  },
+  "1030": {
+   "first_name": "Jace",
+   "last_name": "Tatum",
+   "position": "RB",
+   "fantasy_positions": [
+    "RB"
+   ],
+   "team": "ATL"
+  },
+  "1031": {
+   "first_name": "Brady",
+   "last_name": "Lockett",
+   "position": "RB",
+   "fantasy_positions": [
+    "RB"
+   ],
+   "team": "DET"
+  },
+  "1032": {
+   "first_name": "Brady",
+   "last_name": "Ashby",
+   "position": "RB",
+   "fantasy_positions": [
+    "RB"
+   ],
+   "team": "KC"
+  },
+  "1033": {
+   "first_name": "Malik",
+   "last_name": "Sutter",
+   "position": "RB",
+   "fantasy_positions": [
+    "RB"
+   ],
+   "team": "GB"
+  },
+  "1034": {
+   "first_name": "Owen",
+   "last_name": "Delgado",
+   "position": "WR",
+   "fantasy_positions": [
+    "WR"
+   ],
+   "team": "DAL"
+  },
+  "1035": {
+   "first_name": "Darius",
+   "last_name": "Tatum",
+   "position": "WR",
+   "fantasy_positions": [
+    "WR"
+   ],
+   "team": "ATL"
+  },
+  "1036": {
+   "first_name": "Cody",
+   "last_name": "Mercer",
+   "position": "WR",
+   "fantasy_positions": [
+    "WR"
+   ],
+   "team": "BUF"
+  },
+  "1037": {
+   "first_name": "Jalen",
+   "last_name": "Okafor",
+   "position": "WR",
+   "fantasy_positions": [
+    "WR"
+   ],
+   "team": "BUF"
+  },
+  "1038": {
+   "first_name": "Rashad",
+   "last_name": "Kimble",
+   "position": "WR",
+   "fantasy_positions": [
+    "WR"
+   ],
+   "team": "KC"
+  },
+  "1039": {
+   "first_name": "Darius",
+   "last_name": "Kimble",
+   "position": "TE",
+   "fantasy_positions": [
+    "TE"
+   ],
+   "team": "MIN"
+  },
+  "1040": {
+   "first_name": "Malik",
+   "last_name": "Tatum",
+   "position": "TE",
+   "fantasy_positions": [
+    "TE"
+   ],
+   "team": "SF"
+  },
+  "1041": {
+   "first_name": "Rashad",
+   "last_name": "Barnes",
+   "position": "K",
+   "fantasy_positions": [
+    "K"
+   ],
+   "team": "GB"
+  },
+  "1042": {
+   "first_name": "Mason",
+   "last_name": "Whitfield",
+   "position": "QB",
+   "fantasy_positions": [
+    "QB"
+   ],
+   "team": "LAR"
+  },
+  "1043": {
+   "first_name": "Isaiah",
+   "last_name": "Booker",
+   "position": "QB",
+   "fantasy_positions": [
+    "QB"
+   ],
+   "team": "ATL"
+  },
+  "1044": {
+   "first_name": "Brady",
+   "last_name": "Hargrove",
+   "position": "RB",
+   "fantasy_positions": [
+    "RB"
+   ],
+   "team": "BUF"
+  },
+  "1045": {
+   "first_name": "Marcus",
+   "last_name": "Tatum",
+   "position": "RB",
+   "fantasy_positions": [
+    "RB"
+   ],
+   "team": "CIN"
+  },
+  "1046": {
+   "first_name": "Kenny",
+   "last_name": "Pruitt",
+   "position": "RB",
+   "fantasy_positions": [
+    "RB"
+   ],
+   "team": "BUF"
+  },
+  "1047": {
+   "first_name": "Malik",
+   "last_name": "Vance",
+   "position": "RB",
+   "fantasy_positions": [
+    "RB"
+   ],
+   "team": "LAR"
+  },
+  "1048": {
+   "first_name": "Cody",
+   "last_name": "Ashby",
+   "position": "WR",
+   "fantasy_positions": [
+    "WR"
+   ],
+   "team": "CIN"
+  },
+  "1049": {
+   "first_name": "Cody",
+   "last_name": "Rowe",
+   "position": "WR",
+   "fantasy_positions": [
+    "WR"
+   ],
+   "team": "HOU"
+  },
+  "1050": {
+   "first_name": "Mason",
+   "last_name": "Pruitt",
+   "position": "WR",
+   "fantasy_positions": [
+    "WR"
+   ],
+   "team": "GB"
+  },
+  "1051": {
+   "first_name": "Brady",
+   "last_name": "Fontaine",
+   "position": "WR",
+   "fantasy_positions": [
+    "WR"
+   ],
+   "team": "CIN"
+  },
+  "1052": {
+   "first_name": "Cody",
+   "last_name": "Tatum",
+   "position": "WR",
+   "fantasy_positions": [
+    "WR"
+   ],
+   "team": "PHI"
+  },
+  "1053": {
+   "first_name": "Cole",
+   "last_name": "Holloway",
+   "position": "TE",
+   "fantasy_positions": [
+    "TE"
+   ],
+   "team": "LAR"
+  },
+  "1054": {
+   "first_name": "Jace",
+   "last_name": "Holloway",
+   "position": "TE",
+   "fantasy_positions": [
+    "TE"
+   ],
+   "team": "ATL"
+  },
+  "1055": {
+   "first_name": "Darius",
+   "last_name": "Lockett",
+   "position": "K",
+   "fantasy_positions": [
+    "K"
+   ],
+   "team": "ATL"
+  },
+  "1056": {
+   "first_name": "Marcus",
+   "last_name": "Sutter",
+   "position": "QB",
+   "fantasy_positions": [
+    "QB"
+   ],
+   "team": "GB"
+  },
+  "1057": {
+   "first_name": "Jalen",
+   "last_name": "Tatum",
+   "position": "QB",
+   "fantasy_positions": [
+    "QB"
+   ],
+   "team": "ATL"
+  },
+  "1058": {
+   "first_name": "Xavier",
+   "last_name": "Kimble",
+   "position": "RB",
+   "fantasy_positions": [
+    "RB"
+   ],
+   "team": "BUF"
+  },
+  "1059": {
+   "first_name": "Mason",
+   "last_name": "Ashby",
+   "position": "RB",
+   "fantasy_positions": [
+    "RB"
+   ],
+   "team": "DET"
+  },
+  "1060": {
+   "first_name": "Malik",
+   "last_name": "Delgado",
+   "position": "RB",
+   "fantasy_positions": [
+    "RB"
+   ],
+   "team": "HOU"
+  },
+  "1061": {
+   "first_name": "Deshawn",
+   "last_name": "Fontaine",
+   "position": "RB",
+   "fantasy_positions": [
+    "RB"
+   ],
+   "team": "DAL"
+  },
+  "1062": {
+   "first_name": "Nate",
+   "last_name": "Tatum",
+   "position": "WR",
+   "fantasy_positions": [
+    "WR"
+   ],
+   "team": "KC"
+  },
+  "1063": {
+   "first_name": "Isaiah",
+   "last_name": "Lockett",
+   "position": "WR",
+   "fantasy_positions": [
+    "WR"
+   ],
+   "team": "DAL"
+  },
+  "1064": {
+   "first_name": "Trey",
+   "last_name": "Delgado",
+   "position": "WR",
+   "fantasy_positions": [
+    "WR"
+   ],
+   "team": "DAL"
+  },
+  "1065": {
+   "first_name": "Luke",
+   "last_name": "Lockett",
+   "position": "WR",
+   "fantasy_positions": [
+    "WR"
+   ],
+   "team": "KC"
+  },
+  "1066": {
+   "first_name": "Jace",
+   "last_name": "Fontaine",
+   "position": "WR",
+   "fantasy_positions": [
+    "WR"
+   ],
+   "team": "KC"
+  },
+  "1067": {
+   "first_name": "Brady",
+   "last_name": "Whitfield",
+   "position": "TE",
+   "fantasy_positions": [
+    "TE"
+   ],
+   "team": "LAR"
+  },
+  "1068": {
+   "first_name": "Cody",
+   "last_name": "Kimble",
+   "position": "TE",
+   "fantasy_positions": [
+    "TE"
+   ],
+   "team": "DET"
+  },
+  "1069": {
+   "first_name": "Luke",
+   "last_name": "Mercer",
+   "position": "K",
+   "fantasy_positions": [
+    "K"
+   ],
+   "team": "MIN"
+  },
+  "1070": {
+   "first_name": "Nate",
+   "last_name": "Delgado",
+   "position": "QB",
+   "fantasy_positions": [
+    "QB"
+   ],
+   "team": "BUF"
+  },
+  "1071": {
+   "first_name": "Trey",
+   "last_name": "Sutter",
+   "position": "QB",
+   "fantasy_positions": [
+    "QB"
+   ],
+   "team": "DET"
+  },
+  "1072": {
+   "first_name": "Tyrell",
+   "last_name": "Okafor",
+   "position": "RB",
+   "fantasy_positions": [
+    "RB"
+   ],
+   "team": "LAR"
+  },
+  "1073": {
+   "first_name": "Jalen",
+   "last_name": "Easley",
+   "position": "RB",
+   "fantasy_positions": [
+    "RB"
+   ],
+   "team": "DAL"
+  },
+  "1074": {
+   "first_name": "Mason",
+   "last_name": "Vance",
+   "position": "RB",
+   "fantasy_positions": [
+    "RB"
+   ],
+   "team": "DAL"
+  },
+  "1075": {
+   "first_name": "Deshawn",
+   "last_name": "Holloway",
+   "position": "RB",
+   "fantasy_positions": [
+    "RB"
+   ],
+   "team": "LAR"
+  },
+  "1076": {
+   "first_name": "Owen",
+   "last_name": "Pruitt",
+   "position": "WR",
+   "fantasy_positions": [
+    "WR"
+   ],
+   "team": "DET"
+  },
+  "1077": {
+   "first_name": "Andre",
+   "last_name": "Kimble",
+   "position": "WR",
+   "fantasy_positions": [
+    "WR"
+   ],
+   "team": "CIN"
+  },
+  "1078": {
+   "first_name": "Owen",
+   "last_name": "Booker",
+   "position": "WR",
+   "fantasy_positions": [
+    "WR"
+   ],
+   "team": "HOU"
+  },
+  "1079": {
+   "first_name": "Malik",
+   "last_name": "Barnes",
+   "position": "WR",
+   "fantasy_positions": [
+    "WR"
+   ],
+   "team": "MIN"
+  },
+  "1080": {
+   "first_name": "Andre",
+   "last_name": "Vance",
+   "position": "WR",
+   "fantasy_positions": [
+    "WR"
+   ],
+   "team": "MIN"
+  },
+  "1081": {
+   "first_name": "Darius",
+   "last_name": "Whitfield",
+   "position": "TE",
+   "fantasy_positions": [
+    "TE"
+   ],
+   "team": "LAR"
+  },
+  "1082": {
+   "first_name": "Marcus",
+   "last_name": "Lockett",
+   "position": "TE",
+   "fantasy_positions": [
+    "TE"
+   ],
+   "team": "HOU"
+  },
+  "1083": {
+   "first_name": "Jace",
+   "last_name": "Booker",
+   "position": "K",
+   "fantasy_positions": [
+    "K"
+   ],
+   "team": "CIN"
+  },
+  "1084": {
+   "first_name": "Isaiah",
+   "last_name": "Easley",
+   "position": "QB",
+   "fantasy_positions": [
+    "QB"
+   ],
+   "team": "MIN"
+  },
+  "1085": {
+   "first_name": "Trey",
+   "last_name": "Tatum",
+   "position": "QB",
+   "fantasy_positions": [
+    "QB"
+   ],
+   "team": "BUF"
+  },
+  "1086": {
+   "first_name": "Luke",
+   "last_name": "Vance",
+   "position": "RB",
+   "fantasy_positions": [
+    "RB"
+   ],
+   "team": "MIN"
+  },
+  "1087": {
+   "first_name": "Tyrell",
+   "last_name": "Barnes",
+   "position": "RB",
+   "fantasy_positions": [
+    "RB"
+   ],
+   "team": "HOU"
+  },
+  "1088": {
+   "first_name": "Isaiah",
+   "last_name": "Whitfield",
+   "position": "RB",
+   "fantasy_positions": [
+    "RB"
+   ],
+   "team": "LAR"
+  },
+  "1089": {
+   "first_name": "Brady",
+   "last_name": "Booker",
+   "position": "RB",
+   "fantasy_positions": [
+    "RB"
+   ],
+   "team": "GB"
+  },
+  "1090": {
+   "first_name": "Rashad",
+   "last_name": "Rowe",
+   "position": "WR",
+   "fantasy_positions": [
+    "WR"
+   ],
+   "team": "LAR"
+  },
+  "1091": {
+   "first_name": "Jace",
+   "last_name": "Vance",
+   "position": "WR",
+   "fantasy_positions": [
+    "WR"
+   ],
+   "team": "KC"
+  },
+  "1092": {
+   "first_name": "Owen",
+   "last_name": "Ashby",
+   "position": "WR",
+   "fantasy_positions": [
+    "WR"
+   ],
+   "team": "GB"
+  },
+  "1093": {
+   "first_name": "Owen",
+   "last_name": "Barnes",
+   "position": "WR",
+   "fantasy_positions": [
+    "WR"
+   ],
+   "team": "HOU"
+  },
+  "1094": {
+   "first_name": "Rashad",
+   "last_name": "Easley",
+   "position": "WR",
+   "fantasy_positions": [
+    "WR"
+   ],
+   "team": "SF"
+  },
+  "1095": {
+   "first_name": "Kenny",
+   "last_name": "Lockett",
+   "position": "TE",
+   "fantasy_positions": [
+    "TE"
+   ],
+   "team": "ATL"
+  },
+  "1096": {
+   "first_name": "Luke",
+   "last_name": "Ashby",
+   "position": "TE",
+   "fantasy_positions": [
+    "TE"
+   ],
+   "team": "DET"
+  },
+  "1097": {
+   "first_name": "Xavier",
+   "last_name": "Delgado",
+   "position": "K",
+   "fantasy_positions": [
+    "K"
+   ],
+   "team": "MIN"
+  },
+  "1098": {
+   "first_name": "Andre",
+   "last_name": "Tatum",
+   "position": "QB",
+   "fantasy_positions": [
+    "QB"
+   ],
+   "team": "LAR"
+  },
+  "1099": {
+   "first_name": "Cole",
+   "last_name": "Tatum",
+   "position": "QB",
+   "fantasy_positions": [
+    "QB"
+   ],
+   "team": "HOU"
+  },
+  "1100": {
+   "first_name": "Isaiah",
+   "last_name": "Okafor",
+   "position": "RB",
+   "fantasy_positions": [
+    "RB"
+   ],
+   "team": "KC"
+  },
+  "1101": {
+   "first_name": "Cole",
+   "last_name": "Quinlan",
+   "position": "RB",
+   "fantasy_positions": [
+    "RB"
+   ],
+   "team": "BUF"
+  },
+  "1102": {
+   "first_name": "Trey",
+   "last_name": "Whitfield",
+   "position": "RB",
+   "fantasy_positions": [
+    "RB"
+   ],
+   "team": "GB"
+  },
+  "1103": {
+   "first_name": "Marcus",
+   "last_name": "Pruitt",
+   "position": "RB",
+   "fantasy_positions": [
+    "RB"
+   ],
+   "team": "KC"
+  },
+  "1104": {
+   "first_name": "Brady",
+   "last_name": "Sutter",
+   "position": "WR",
+   "fantasy_positions": [
+    "WR"
+   ],
+   "team": "BUF"
+  },
+  "1105": {
+   "first_name": "Mason",
+   "last_name": "Sutter",
+   "position": "WR",
+   "fantasy_positions": [
+    "WR"
+   ],
+   "team": "ATL"
+  },
+  "1106": {
+   "first_name": "Xavier",
+   "last_name": "Okafor",
+   "position": "WR",
+   "fantasy_positions": [
+    "WR"
+   ],
+   "team": "LAR"
+  },
+  "1107": {
+   "first_name": "Jace",
+   "last_name": "Okafor",
+   "position": "WR",
+   "fantasy_positions": [
+    "WR"
+   ],
+   "team": "HOU"
+  },
+  "1108": {
+   "first_name": "Malik",
+   "last_name": "Kimble",
+   "position": "WR",
+   "fantasy_positions": [
+    "WR"
+   ],
+   "team": "GB"
+  },
+  "1109": {
+   "first_name": "Rashad",
+   "last_name": "Quinlan",
+   "position": "TE",
+   "fantasy_positions": [
+    "TE"
+   ],
+   "team": "DET"
+  },
+  "1110": {
+   "first_name": "Rashad",
+   "last_name": "Delgado",
+   "position": "TE",
+   "fantasy_positions": [
+    "TE"
+   ],
+   "team": "HOU"
+  },
+  "1111": {
+   "first_name": "Malik",
+   "last_name": "Hargrove",
+   "position": "K",
+   "fantasy_positions": [
+    "K"
+   ],
+   "team": "DET"
+  },
+  "1112": {
+   "first_name": "Marcus",
+   "last_name": "Okafor",
+   "position": "QB",
+   "fantasy_positions": [
+    "QB"
+   ],
+   "team": "KC"
+  },
+  "1113": {
+   "first_name": "Jace",
+   "last_name": "Graves",
+   "position": "QB",
+   "fantasy_positions": [
+    "QB"
+   ],
+   "team": "CIN"
+  },
+  "1114": {
+   "first_name": "Jalen",
+   "last_name": "Booker",
+   "position": "RB",
+   "fantasy_positions": [
+    "RB"
+   ],
+   "team": "DAL"
+  },
+  "1115": {
+   "first_name": "Owen",
+   "last_name": "Quinlan",
+   "position": "RB",
+   "fantasy_positions": [
+    "RB"
+   ],
+   "team": "HOU"
+  },
+  "1116": {
+   "first_name": "Brady",
+   "last_name": "Delgado",
+   "position": "RB",
+   "fantasy_positions": [
+    "RB"
+   ],
+   "team": "DET"
+  },
+  "1117": {
+   "first_name": "Jalen",
+   "last_name": "Delgado",
+   "position": "RB",
+   "fantasy_positions": [
+    "RB"
+   ],
+   "team": "DET"
+  },
+  "1118": {
+   "first_name": "Deshawn",
+   "last_name": "Ashby",
+   "position": "WR",
+   "fantasy_positions": [
+    "WR"
+   ],
+   "team": "DAL"
+  },
+  "1119": {
+   "first_name": "Jalen",
+   "last_name": "Hargrove",
+   "position": "WR",
+   "fantasy_positions": [
+    "WR"
+   ],
+   "team": "BUF"
+  },
+  "1120": {
+   "first_name": "Brady",
+   "last_name": "Rowe",
+   "position": "WR",
+   "fantasy_positions": [
+    "WR"
+   ],
+   "team": "PHI"
+  },
+  "1121": {
+   "first_name": "Jalen",
+   "last_name": "Fontaine",
+   "position": "WR",
+   "fantasy_positions": [
+    "WR"
+   ],
+   "team": "MIN"
+  },
+  "1122": {
+   "first_name": "Nate",
+   "last_name": "Mercer",
+   "position": "WR",
+   "fantasy_positions": [
+    "WR"
+   ],
+   "team": "HOU"
+  },
+  "1123": {
+   "first_name": "Mason",
+   "last_name": "Mercer",
+   "position": "TE",
+   "fantasy_positions": [
+    "TE"
+   ],
+   "team": "KC"
+  },
+  "1124": {
+   "first_name": "Cole",
+   "last_name": "Rowe",
+   "position": "TE",
+   "fantasy_positions": [
+    "TE"
+   ],
+   "team": "CIN"
+  },
+  "1125": {
+   "first_name": "Mason",
+   "last_name": "Lockett",
+   "position": "K",
+   "fantasy_positions": [
+    "K"
+   ],
+   "team": "KC"
+  }
+ }
+}

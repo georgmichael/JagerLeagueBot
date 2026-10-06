@@ -1,0 +1,38 @@
+name: Weekly recap
+
+on:
+  schedule:
+    # Tuesdays 14:07 UTC (10:07am ET), after Monday Night Football.
+    - cron: "7 14 * * 2"
+  workflow_dispatch:
+    inputs:
+      week:
+        description: "Week to recap (blank = last completed week)"
+        required: false
+      dry_run:
+        description: "Print the recap in the job log instead of posting to Discord"
+        type: boolean
+        default: true
+
+jobs:
+  recap:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+    - name: Install dependencies
+      run: pip install -r requirements.txt
+    - name: Build and post recap
+      env:
+        JAGER_LEAGUE_ID: ${{ vars.JAGER_LEAGUE_ID }}
+        ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        WEEK: ${{ inputs.week }}
+        DRY_RUN: ${{ inputs.dry_run }}
+      run: |
+        args=()
+        if [ -n "$WEEK" ]; then args+=(--week "$WEEK"); fi
+        if [ "$DRY_RUN" = "true" ]; then args+=(--dry-run); fi
+        python weekly_recap.py "${args[@]}"
