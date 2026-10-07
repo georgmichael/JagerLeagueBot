@@ -9,6 +9,10 @@ on:
       week:
         description: "Week to report on (blank for the last completed week)"
         required: false
+      dry_run:
+        description: "Print the recap in the log instead of posting to Discord"
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -32,4 +36,5 @@ jobs:
         LLM_MODEL: ${{ vars.LLM_MODEL }}
         DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         WEEK: ${{ inputs.week }}
-      run: python weekly_report.py ${WEEK:+--week "$WEEK"}
+        DRY_RUN: ${{ inputs.dry_run && '--dry-run' || '' }}
+      run: python weekly_report.py ${WEEK:+--week "$WEEK"} $DRY_RUN

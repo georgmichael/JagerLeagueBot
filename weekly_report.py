@@ -81,6 +81,8 @@ def write_recap(summary, api_key, base_url, model):
                 break
             print(f"Model returned {response.status_code}, retrying in {delay}s", file=sys.stderr)
         time.sleep(delay)
+    if not response.ok:
+        print(f"Model error response: {response.text[:500]}", file=sys.stderr)
     response.raise_for_status()
     return response.json()["choices"][0]["message"]["content"].strip()
 
