@@ -1,0 +1,35 @@
+name: Weekly report
+
+on:
+  schedule:
+    # Tuesdays at 14:00 UTC, after Monday Night Football
+    - cron: "0 14 * * 2"
+  workflow_dispatch:
+    inputs:
+      week:
+        description: "Week to report on (blank for the last completed week)"
+        required: false
+
+permissions:
+  contents: read
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+    - name: Install dependencies
+      run: pip install -r requirements.txt
+    - name: Post report to Discord
+      env:
+        LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+        LLM_BASE_URL: ${{ vars.LLM_BASE_URL }}
+        LLM_MODEL: ${{ vars.LLM_MODEL }}
+        DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        WEEK: ${{ inputs.week }}
+      run: python weekly_report.py ${WEEK:+--week "$WEEK"}

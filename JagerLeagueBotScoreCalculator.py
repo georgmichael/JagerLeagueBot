@@ -1,111 +1,94 @@
-import requests
+import argparse
 import statistics
-import json
 
-#test league and week
-# league = 865826998382112768
-#current_week = 3
+import requests
 
-# Get the current week
-# variable: current_week
-# Jager Sleeper League: league 
+SLEEPER_API = "https://api.sleeper.app/v1"
 
-
-url_nfl_state= 'https://api.sleeper.app/v1/state/nfl'
-response = requests.get(url_nfl_state)
-fantasy_week = response.json()['week']
-league = 1001613023221522432
-
-current_week = int(input("LMK which week you're interested in seeing data for homie : "))
-while (current_week > int(fantasy_week)) :
-    print ("Sheeeesh I can't predict the future.... yet \n")
-    current_week = int((input("Wanna try again and give me an actual week: ")))
-
-list_matchups_data = []
-user_data = []
-roster_data = []
-points = []
-
-target_matchup = "False"
-bot_op_score = "DickenCider"
-bot_op_id = 0
-bot_op_owner_id = 0 
-bot_op_name ="Wow"
-# get matchup endpoint
-
-url_matchups =f"https://api.sleeper.app/v1/league/{league}/matchups/{current_week}"
-matchups_response = requests.get(url_matchups)
-json_matchups = matchups_response.json()
-
-#find the bot score
-for matchup in json_matchups:
-    list_matchups_data.append([league, matchup['matchup_id'], matchup['roster_id'], matchup['points']])  
-
-    if(int(float(matchup['points'])) == 0):
-        target_matchup = str(matchup['matchup_id'])
-
-#Find the right bot opponent
-for matchup in json_matchups:
-    if(int(float(matchup['points'])) == 0):
-        continue
-    elif(target_matchup == str(matchup['matchup_id'])):
-        bot_op_id = str(matchup['roster_id'])
-        bot_op_score = float(matchup['points'])
-    else :
-        points.append(matchup['points'])
-
-points = [str(p) for p in points]
-
-for i in range(0, len(points)):
-    points[i] = float(points[i])
+# Jager Sleeper League. The ID changes every season.
+LEAGUE_ID = "1389329073896968194"
+# Sleeper username of the bot that fills the empty slot
+BOT_USERNAME = "gusonthego"
 
 
-#Roster API Call to get the Bot Opponent's Owner ID
-url_rosters = f"https://api.sleeper.app/v1/league/{league}/rosters"
-roster_response = requests.get(url_rosters)
-json_rosters = roster_response.json()
-
-for roster in json_rosters : 
-    roster_data.append([roster['roster_id'], roster['owner_id']])
-    if (bot_op_id == str(roster['roster_id'])) :
-        bot_op_owner_id = str(roster['owner_id'])
-
-#Users API call to get the Bot Opponent's Owner Display Name
-url_users = f"https://api.sleeper.app/v1/league/{league}/users"
-user_response = requests.get(url_users)
-json_users = user_response.json()
-
-for users in json_users :
-    user_data.append([users['user_id'], users['display_name'] ]) 
-    if (bot_op_owner_id == str(users['user_id'])) :
-        bot_op_name = str(users['display_name'])
-
-# get scores and return median
-bot_score = statistics.median(points)
-
-#Announce the winner of the Bot Game
-if (bot_op_score < bot_score) :
-    print('GUSBOT beat '+ str(bot_op_name) + ' with the score of ' + str(bot_score) + ' to ' + str(bot_op_score))
-else:
-    print (str(bot_op_name) + ' beat GUSBOT with a score of ' + str(bot_op_score) + ' to ' + str(bot_score))
+def get_json(path):
+    response = requests.get(f"{SLEEPER_API}{path}", timeout=30)
+    response.raise_for_status()
+    return response.json()
 
 
-## TESTING ##
+def current_nfl_week():
+    return int(get_json("/state/nfl")["week"])
 
-#test Json response data 
-#print(user_data)
-#print("roster")
-#print(roster_data)
-#print("matchups")
-#print(list_matchups_data)
-#print(target_matchup)
 
-#print (points)
-#print (bot_score)
-# print (target_matchup)
-# print (bot_op_score)
-# print (bot_op_name)
-#print('The Median is '+ str(bot_score) + '.')
-#print(y)
-#test print 
-#print(*list_matchups_data, sep = "\n")
+def week_results(league, week):
+    """Return every team's score for the week plus the GUSBOT game result.
+
+    GUSBOT's score is the median of all teams except GUSBOT and its opponent
+    (leaving the opponent out avoids ties).
+    """
+    matchups = get_json(f"/league/{league}/matchups/{week}")
+    rosters = get_json(f"/league/{league}/rosters")
+    users = get_json(f"/league/{league}/users")
+
+    users_by_id = {user["user_id"]: user for user in users}
+    owner_by_roster = {roster["roster_id"]: roster["owner_id"] for roster in rosters}
+
+    teams = []
+    for matchup in matchups:
+        user = users_by_id.get(owner_by_roster.get(matchup["roster_id"]), {})
+        teams.append({
+            "roster_id": matchup["roster_id"],
+            "matchup_id": matchup["matchup_id"],
+            "owner": user.get("display_name", "Unknown"),
+            "team_name": (user.get("metadata") or {}).get("team_name") or user.get("display_name", "Unknown"),
+            "points": float(matchup["points"] or 0),
+        })
+
+    if all(team["points"] == 0 for team in teams):
+        raise ValueError(f"Week {week} has no scores yet")
+
+    bot = next((team for team in teams if team["owner"] == BOT_USERNAME), None)
+    if bot is None or bot["matchup_id"] is None:
+        raise ValueError(f"{BOT_USERNAME} has no matchup in week {week}")
+
+    opponent = next(team for team in teams
+                    if team["matchup_id"] == bot["matchup_id"] and team is not bot)
+    bot_score = statistics.median(team["points"] for team in teams
+                                  if team is not bot and team is not opponent)
+
+    return {
+        "week": week,
+        "teams": teams,
+        "bot_score": bot_score,
+        "bot_actual_score": bot["points"],
+        "opponent": opponent,
+        "bot_won": opponent["points"] < bot_score,
+    }
+
+
+def result_line(results):
+    opponent = results["opponent"]
+    if results["bot_won"]:
+        return f"GUSBOT beat {opponent['owner']} with the score of {results['bot_score']:.2f} to {opponent['points']:.2f}"
+    return f"{opponent['owner']} beat GUSBOT with a score of {opponent['points']:.2f} to {results['bot_score']:.2f}"
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Calculate GUSBOT's score for a week")
+    parser.add_argument("--week", type=int, help="NFL week (prompts if omitted)")
+    args = parser.parse_args()
+
+    fantasy_week = current_nfl_week()
+    week = args.week
+    if week is None:
+        week = int(input("LMK which week you're interested in seeing data for homie : "))
+    while week > fantasy_week:
+        print("Sheeeesh I can't predict the future.... yet \n")
+        week = int(input("Wanna try again and give me an actual week: "))
+
+    print(result_line(week_results(LEAGUE_ID, week)))
+
+
+if __name__ == "__main__":
+    main()

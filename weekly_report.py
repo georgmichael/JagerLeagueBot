@@ -1,0 +1,121 @@
+"""Write the weekly Jager League recap with an LLM and post it to Discord.
+
+Any OpenAI-compatible chat completions API works. The default is the Gemini API free tier.
+
+Environment:
+  LLM_API_KEY          Gemini API key from aistudio.google.com (without it, the plain summary is posted)
+  LLM_BASE_URL         OpenAI-compatible base URL (default: Gemini's OpenAI-compatible endpoint)
+  LLM_MODEL            model ID (default: gemini-3.8-flash)
+  DISCORD_WEBHOOK_URL  Discord channel webhook (not needed with --dry-run)
+"""
+import argparse
+import os
+import sys
+from collections import defaultdict
+
+import requests
+
+from JagerLeagueBotScoreCalculator import BOT_USERNAME, LEAGUE_ID, current_nfl_week, result_line, week_results
+
+DEFAULT_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai"
+DEFAULT_MODEL = "gemini-3.8-flash"
+DISCORD_LIMIT = 2000
+
+SYSTEM_PROMPT = """You write the weekly recap for the Jager League, a 10-team fantasy football league among friends.
+One slot is filled by a bot, GUSBOT, whose real score doesn't count. Its official score is the median of the
+other teams' scores, not counting its opponent. Write a short, funny, trash-talking recap for Discord:
+a headline, one or two lines per matchup, and the GUSBOT result. Use only the scores given and don't invent
+player stats. Use Discord markdown and keep it under 1500 characters."""
+
+
+def matchup_summary(results):
+    """Plain-text summary of the week, used as the model's input and as the fallback post."""
+    games = defaultdict(list)
+    for team in results["teams"]:
+        if team["owner"] != BOT_USERNAME and team["matchup_id"] is not None:
+            games[team["matchup_id"]].append(team)
+
+    lines = [f"**Jager League: Week {results['week']}**"]
+    bot_opponent = results["opponent"]
+    for teams in games.values():
+        if bot_opponent in teams:
+            continue
+        a, b = sorted(teams, key=lambda team: team["points"], reverse=True)
+        lines.append(f"{a['team_name']} ({a['owner']}) {a['points']:.2f} def. "
+                     f"{b['team_name']} ({b['owner']}) {b['points']:.2f}")
+
+    lines.append(f"GUSBOT game ({bot_opponent['team_name']}): {result_line(results)}")
+    return "\n".join(lines)
+
+
+def write_recap(summary, api_key, base_url, model):
+    response = requests.post(
+        f"{base_url.rstrip('/')}/chat/completions",
+        headers={"Authorization": f"Bearer {api_key}"},
+        json={
+            "model": model,
+            "messages": [
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user", "content": summary},
+            ],
+        },
+        timeout=60,
+    )
+    response.raise_for_status()
+    return response.json()["choices"][0]["message"]["content"].strip()
+
+
+def post_to_discord(webhook_url, content):
+    if len(content) > DISCORD_LIMIT:
+        content = content[:DISCORD_LIMIT - 1] + "…"
+    response = requests.post(webhook_url, json={"content": content}, timeout=30)
+    response.raise_for_status()
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("--week", type=int, help="week to report on (default: the last completed week)")
+    parser.add_argument("--dry-run", action="store_true", help="print the recap instead of posting it")
+    args = parser.parse_args()
+
+    # Sleeper moves to the next week once Monday night's game ends, so the last completed week is one behind.
+    week = args.week or current_nfl_week() - 1
+    if week < 1:
+        print("No completed week to report on yet")
+        return
+
+    try:
+        results = week_results(LEAGUE_ID, week)
+    except ValueError as error:
+        # Off-season, playoffs without GUSBOT, or a week with no scores
+        print(f"Skipping report: {error}")
+        return
+
+    summary = matchup_summary(results)
+    recap = summary
+    api_key = os.environ.get("LLM_API_KEY")
+    if api_key:
+        try:
+            recap = write_recap(summary, api_key,
+                                os.environ.get("LLM_BASE_URL") or DEFAULT_BASE_URL,
+                                os.environ.get("LLM_MODEL") or DEFAULT_MODEL)
+            # The GUSBOT result is the point of the report, so never rely on the model to state it.
+            recap += f"\n\n🤖 {result_line(results)}"
+        except (requests.RequestException, KeyError, IndexError) as error:
+            print(f"Model call failed, posting the plain summary instead: {error}", file=sys.stderr)
+    else:
+        print("LLM_API_KEY not set, posting the plain summary", file=sys.stderr)
+
+    if args.dry_run:
+        print(recap)
+        return
+
+    webhook_url = os.environ.get("DISCORD_WEBHOOK_URL")
+    if not webhook_url:
+        sys.exit("DISCORD_WEBHOOK_URL is not set")
+    post_to_discord(webhook_url, recap)
+    print(f"Posted week {week} recap to Discord")
+
+
+if __name__ == "__main__":
+    main()
