@@ -53,7 +53,9 @@ def matchup_summary(results):
         lines.append(f"{a['team_name']} ({a['owner']}) {a['points']:.2f} def. "
                      f"{b['team_name']} ({b['owner']}) {b['points']:.2f}")
 
-    lines.append(f"GUSBOT game ({bot_opponent['team_name']}): {result_line(results)}")
+    lines.append(f"GUSBOT game: GUSBOT {results['bot_score']:.2f} vs. "
+                 f"{bot_opponent['team_name']} ({bot_opponent['owner']}) {bot_opponent['points']:.2f}. "
+                 f"{result_line(results)}")
     return "\n".join(lines)
 
 
