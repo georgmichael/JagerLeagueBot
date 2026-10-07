@@ -26,7 +26,7 @@ def build_messages(week_facts, recap):
     }
     overview = {
         "title": _truncate(f"Week {week_facts['week']}: {recap['headline']}", 256),
-        "description": _truncate(recap["intro"], EMBED_DESCRIPTION_LIMIT),
+        "description": _truncate(recap["intro"] or "\u200b", EMBED_DESCRIPTION_LIMIT),
         "color": COLOR,
         "fields": [
             {"name": label, "value": _truncate(awards[key], 1024), "inline": False}

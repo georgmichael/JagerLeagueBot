@@ -136,21 +136,81 @@ class FakeClient:
         return self._response
 
 
-def test_writer_parses_json(data):
+def test_claude_writer_parses_json(data):
     facts = week.build_week(data)
     body = {"headline": "h", "intro": "i", "matchups": []}
     client = FakeClient(SimpleNamespace(
         stop_reason="end_turn", stop_details=None,
         content=[SimpleNamespace(type="text", text=json.dumps(body))],
     ))
-    assert writer.write_recap(facts, client=client) == body
+    assert writer.write_recap(facts, provider="claude", client=client) == body
     call = client.calls[0]
-    assert call["model"] == writer.MODEL
+    assert call["model"] == writer.CLAUDE_MODEL
     assert call["output_config"]["format"]["type"] == "json_schema"
 
 
-def test_writer_raises_on_refusal(data):
+def test_claude_writer_raises_on_refusal(data):
     facts = week.build_week(data)
     client = FakeClient(SimpleNamespace(stop_reason="refusal", stop_details={"category": None}, content=[]))
     with pytest.raises(writer.RecapRefused):
-        writer.write_recap(facts, client=client)
+        writer.write_recap(facts, provider="claude", client=client)
+
+
+class FakeResponse:
+    def __init__(self, status_code, payload=None, headers=None):
+        self.status_code = status_code
+        self._payload = payload or {}
+        self.headers = headers or {}
+        self.text = json.dumps(self._payload)
+
+    def json(self):
+        return self._payload
+
+
+def chat_reply(obj, finish_reason="stop"):
+    return FakeResponse(200, {"choices": [{"finish_reason": finish_reason, "message": {"content": json.dumps(obj)}}]})
+
+
+def test_github_models_one_request_per_matchup_plus_intro(data, monkeypatch):
+    facts = week.build_week(data)
+    calls = []
+
+    def fake_post(url, json=None, headers=None, timeout=None):
+        calls.append(json)
+        if "this one matchup" in json["messages"][1]["content"]:
+            return chat_reply({"headline": "H", "recap": f"recap {len(calls)}"})
+        return chat_reply({"headline": "Week headline", "intro": "Intro."})
+
+    monkeypatch.setenv("GITHUB_TOKEN", "t")
+    monkeypatch.setattr(writer.requests, "post", fake_post)
+    recap = writer.write_recap(facts, provider="github")
+    assert len(calls) == len(facts["matchups"]) + 1
+    assert all(c["model"] == writer.GITHUB_MODEL for c in calls)
+    assert recap["headline"] == "Week headline"
+    assert [m["matchup_id"] for m in recap["matchups"]] == [m["matchup_id"] for m in facts["matchups"]]
+
+
+def test_github_models_skips_a_failed_matchup(data, monkeypatch):
+    facts = week.build_week(data)
+    state = {"n": 0}
+
+    def fake_post(url, json=None, headers=None, timeout=None):
+        state["n"] += 1
+        if state["n"] == 1:
+            return FakeResponse(400, {"error": "content filtered"})
+        if "this one matchup" in json["messages"][1]["content"]:
+            return chat_reply({"headline": "H", "recap": "r"})
+        return chat_reply({"headline": "W", "intro": "I"})
+
+    monkeypatch.setenv("GITHUB_TOKEN", "t")
+    monkeypatch.setattr(writer.requests, "post", fake_post)
+    recap = writer.write_recap(facts, provider="github")
+    assert len(recap["matchups"]) == len(facts["matchups"]) - 1
+    # The skipped game still gets a Discord message, just without prose.
+    assert len(discord.build_messages(facts, recap)) == 1 + len(facts["matchups"])
+
+
+def test_github_models_needs_token(data, monkeypatch):
+    monkeypatch.delenv("GITHUB_TOKEN", raising=False)
+    with pytest.raises(RuntimeError):
+        writer.write_recap(week.build_week(data), provider="github")

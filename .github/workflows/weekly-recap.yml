@@ -17,6 +17,9 @@ on:
 jobs:
   recap:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      models: read   # lets GITHUB_TOKEN call GitHub Models
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-python@v5
@@ -27,6 +30,10 @@ jobs:
     - name: Build and post recap
       env:
         JAGER_LEAGUE_ID: ${{ vars.JAGER_LEAGUE_ID }}
+        JAGER_BOT_ROSTER_ID: ${{ vars.JAGER_BOT_ROSTER_ID }}
+        JAGER_LLM: ${{ vars.JAGER_LLM }}
+        JAGER_MODEL: ${{ vars.JAGER_MODEL }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         WEEK: ${{ inputs.week }}

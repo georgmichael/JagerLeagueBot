@@ -9,17 +9,25 @@ python JagerLeagueBotScoreCalculator.py --week 5
 
 ## Weekly recaps
 
-Every Tuesday morning, GitHub Actions pulls the last completed week from Sleeper, has Claude write an ESPN-style recap for each matchup, and posts it to a Discord channel: one overview message with the week's awards, then one message per matchup.
+Every Tuesday morning, GitHub Actions pulls the last completed week from Sleeper, has an AI model write an ESPN-style recap for each matchup, and posts it to a Discord channel: one overview message with the week's awards, then one message per matchup.
 
 ### Setup (repo Settings → Secrets and variables → Actions)
 
 | Name | Kind | Value |
 |---|---|---|
 | `JAGER_LEAGUE_ID` | Variable | This season's Sleeper league ID (it changes every season; it's in the league URL) |
-| `ANTHROPIC_API_KEY` | Secret | Claude API key from console.anthropic.com |
 | `DISCORD_WEBHOOK_URL` | Secret | Discord channel → Edit Channel → Integrations → Webhooks → New Webhook → Copy URL |
+| `JAGER_BOT_ROSTER_ID` | Variable | Optional. GUSBOT's Sleeper roster ID (10 in the 2026 league) |
 
-The bot is found by its Sleeper name (`gusonthego`). To pin it exactly, add a `JAGER_BOT_ROSTER_ID` variable (roster 10 in the 2026 league). Scores use the commissioner's override when Sleeper has one.
+The writing uses [GitHub Models](https://docs.github.com/en/github-models) by default: free, rate-limited, and authenticated with the workflow's own token, so there's no key to add. Optional settings:
+
+| Name | Kind | Value |
+|---|---|---|
+| `JAGER_MODEL` | Variable | GitHub Models model ID (default `openai/gpt-4.1`) |
+| `JAGER_LLM` | Variable | Set to `claude` to use the Claude API instead |
+| `ANTHROPIC_API_KEY` | Secret | Only needed with `JAGER_LLM=claude`; from console.anthropic.com |
+
+Without `JAGER_BOT_ROSTER_ID`, the bot is found by its Sleeper name (`gusonthego`) or by its tiny potential points. Scores use the commissioner's override when Sleeper has one.
 
 ### Running it by hand
 

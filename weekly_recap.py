@@ -7,7 +7,7 @@ Usage:
 
 Environment:
   JAGER_LEAGUE_ID      Sleeper league ID for the current season (it changes every season)
-  ANTHROPIC_API_KEY    Claude API key (not needed with --no-ai)
+  JAGER_LLM            "github" (default, GitHub Models via GITHUB_TOKEN) or "claude" (ANTHROPIC_API_KEY)
   DISCORD_WEBHOOK_URL  Channel webhook (not needed with --dry-run)
 """
 
