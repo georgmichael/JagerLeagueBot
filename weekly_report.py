@@ -100,6 +100,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--week", type=int, help="week to report on (default: the last completed week)")
     parser.add_argument("--dry-run", action="store_true", help="print the recap instead of posting it")
+    parser.add_argument("--no-fallback", action="store_true",
+                        help="exit with an error instead of posting the plain summary when the model call fails")
     args = parser.parse_args()
 
     # Sleeper moves to the next week once Monday night's game ends, so the last completed week is one behind.
@@ -126,7 +128,11 @@ def main():
             # The GUSBOT result is the point of the report, so never rely on the model to state it.
             recap += f"\n\n🤖 {result_line(results)}"
         except (requests.RequestException, KeyError, IndexError) as error:
+            if args.no_fallback:
+                sys.exit(f"Model call failed: {error}")
             print(f"Model call failed, posting the plain summary instead: {error}", file=sys.stderr)
+    elif args.no_fallback:
+        sys.exit("LLM_API_KEY is not set")
     else:
         print("LLM_API_KEY not set, posting the plain summary", file=sys.stderr)
 
