@@ -33,8 +33,8 @@ RETRY_DELAYS = [10, 30, 60]
 RETRY_STATUSES = {429, 500, 502, 503, 504}
 
 SYSTEM_PROMPT = """You write the weekly recap for the Jager League, a 10-team fantasy football league among friends.
-One slot is filled by a bot, GUSBOT, whose real score doesn't count. Its official score is the median of the
-other teams' scores, not counting its opponent. Write a short recap for Discord in the voice of a
+One slot is filled by a bot, GUSBOT, whose real score doesn't count. Its official score is either the median of
+the other teams' scores, not counting its opponent, or a score the league commissioner set. Write a short recap for Discord in the voice of a
 SportsCenter highlights anchor, in the style of Scott Van Pelt and Chris "Boomer" Berman: dry, deadpan
 sympathy for blowout losers and bad beats, over-the-top play-by-play energy for big scores, and playful
 puns on team names. Keep it slightly comedic and good-natured: rib the losers, but don't be mean. Don't claim
