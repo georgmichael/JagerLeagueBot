@@ -21,11 +21,18 @@ def current_nfl_week():
     return int(get_json("/state/nfl")["week"])
 
 
+def team_points(matchup):
+    """A team's score for the week. A commissioner's score edit is stored in custom_points and replaces the raw score."""
+    custom = matchup.get("custom_points")
+    return float(custom if custom is not None else matchup["points"] or 0)
+
+
 def week_results(league, week):
     """Return every team's score for the week plus the GUSBOT game result.
 
     GUSBOT's score is the median of all teams except GUSBOT and its opponent
-    (leaving the opponent out avoids ties).
+    (leaving the opponent out avoids ties). When the commissioner has already
+    set GUSBOT's score in Sleeper, that score is used instead.
     """
     matchups = get_json(f"/league/{league}/matchups/{week}")
     rosters = get_json(f"/league/{league}/rosters")
@@ -42,7 +49,8 @@ def week_results(league, week):
             "matchup_id": matchup["matchup_id"],
             "owner": user.get("display_name", "Unknown"),
             "team_name": (user.get("metadata") or {}).get("team_name") or user.get("display_name", "Unknown"),
-            "points": float(matchup["points"] or 0),
+            "points": team_points(matchup),
+            "raw_points": float(matchup["points"] or 0),
         })
 
     if all(team["points"] == 0 for team in teams):
@@ -54,14 +62,17 @@ def week_results(league, week):
 
     opponent = next(team for team in teams
                     if team["matchup_id"] == bot["matchup_id"] and team is not bot)
-    bot_score = statistics.median(team["points"] for team in teams
-                                  if team is not bot and team is not opponent)
+    if bot["points"] != bot["raw_points"]:
+        bot_score = bot["points"]
+    else:
+        bot_score = statistics.median(team["points"] for team in teams
+                                      if team is not bot and team is not opponent)
 
     return {
         "week": week,
         "teams": teams,
         "bot_score": bot_score,
-        "bot_actual_score": bot["points"],
+        "bot_actual_score": bot["raw_points"],
         "opponent": opponent,
         "bot_won": opponent["points"] < bot_score,
     }
