@@ -2,8 +2,11 @@ name: Weekly report
 
 on:
   schedule:
-    # Tuesdays at 07:00 UTC: 2 a.m. Eastern in standard time (3 a.m. during daylight time), after Monday Night Football
-    - cron: "0 7 * * 2"
+    # Tuesdays at 1 a.m. Eastern, after Monday Night Football. Cron runs in UTC, so there's one entry for daylight
+    # time (05:00 UTC) and one for standard time (06:00 UTC); the job skips whichever doesn't match today's offset.
+    # Off the top of the hour because GitHub delays or drops scheduled runs most often then.
+    - cron: "7 5 * * 2"
+    - cron: "7 6 * * 2"
   workflow_dispatch:
     inputs:
       week:
@@ -24,14 +27,29 @@ jobs:
     timeout-minutes: 360
 
     steps:
+    - name: Skip the schedule entry for the other half of the year
+      id: gate
+      env:
+        SCHEDULE: ${{ github.event.schedule }}
+      run: |
+        # Decide by the entry that fired, not the clock, so a run GitHub starts late still goes ahead
+        if [ -n "$SCHEDULE" ] && [ "$(TZ=America/New_York date +%z)" = "-0400" ] && [ "$SCHEDULE" != "7 5 * * 2" ]; then
+          echo "skip=true" >> "$GITHUB_OUTPUT"
+        elif [ -n "$SCHEDULE" ] && [ "$(TZ=America/New_York date +%z)" = "-0500" ] && [ "$SCHEDULE" != "7 6 * * 2" ]; then
+          echo "skip=true" >> "$GITHUB_OUTPUT"
+        fi
     - uses: actions/checkout@v4
+      if: ${{ !steps.gate.outputs.skip }}
     - name: Set up Python
+      if: ${{ !steps.gate.outputs.skip }}
       uses: actions/setup-python@v5
       with:
         python-version: "3.12"
     - name: Install dependencies
+      if: ${{ !steps.gate.outputs.skip }}
       run: pip install -r requirements.txt
     - name: Post report to Discord
+      if: ${{ !steps.gate.outputs.skip }}
       env:
         LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
         LLM_BASE_URL: ${{ vars.LLM_BASE_URL }}
