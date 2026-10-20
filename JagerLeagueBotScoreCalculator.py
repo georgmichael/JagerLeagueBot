@@ -1,4 +1,5 @@
 import argparse
+import math
 import statistics
 
 import requests
@@ -30,9 +31,11 @@ def team_points(matchup):
 def week_results(league, week):
     """Return every team's score for the week plus the GUSBOT game result.
 
-    GUSBOT's score is the median of all teams except GUSBOT and its opponent
-    (leaving the opponent out avoids ties). When the commissioner has already
-    set GUSBOT's score in Sleeper, that score is used instead.
+    GUSBOT wins when its opponent scores under the median of all teams except
+    GUSBOT and the opponent (leaving the opponent out avoids ties). Its score is
+    then the opponent's score rounded up to the next whole point. Otherwise it
+    loses with its own real score. When the commissioner has already set
+    GUSBOT's score in Sleeper, that score is used instead.
     """
     matchups = get_json(f"/league/{league}/matchups/{week}")
     rosters = get_json(f"/league/{league}/rosters")
@@ -62,16 +65,20 @@ def week_results(league, week):
 
     opponent = next(team for team in teams
                     if team["matchup_id"] == bot["matchup_id"] and team is not bot)
+    median = statistics.median(team["points"] for team in teams
+                               if team is not bot and team is not opponent)
     if bot["points"] != bot["raw_points"]:
         bot_score = bot["points"]
+    elif opponent["points"] < median:
+        bot_score = math.floor(opponent["points"]) + 1
     else:
-        bot_score = statistics.median(team["points"] for team in teams
-                                      if team is not bot and team is not opponent)
+        bot_score = bot["raw_points"]
 
     return {
         "week": week,
         "teams": teams,
         "bot_score": bot_score,
+        "median": median,
         "bot_actual_score": bot["raw_points"],
         "opponent": opponent,
         "bot_won": opponent["points"] < bot_score,

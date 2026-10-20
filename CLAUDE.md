@@ -20,8 +20,8 @@ Both scripts call the public Sleeper API (`https://api.sleeper.app/v1`) live. Th
 
 `JagerLeagueBotScoreCalculator.py` has the league logic. `week_results(league, week)` fetches the week's matchups, rosters and users, joins them (`roster_id` → `owner_id` → user), and works out the GUSBOT game:
 - The bot is found by its Sleeper username (`BOT_USERNAME = "gusonthego"`), not by a 0 score, because it can score a few points.
-- The bot's score is the **median**, not the average the README describes, of every team except the bot and its opponent. The opponent is left out on purpose (commit d206b37) to avoid ties.
-- Every score uses the commissioner's override (`custom_points` in Sleeper's matchup data) when there is one. When the commissioner has set GUSBOT's score, that score is used instead of the median. In practice they set it to the opponent's score rounded up to the next whole point in weeks GUSBOT wins, and leave its real score in weeks it loses.
+- The league rule: GUSBOT wins when its opponent scores under the **median** of every team except the bot and its opponent. The opponent is left out on purpose (commit d206b37) to avoid ties. GUSBOT's score is then the opponent's score rounded up to the next whole point (`floor + 1`, so 117.32 → 118 and 117.00 → 118). Otherwise GUSBOT loses with its own real score. This matches what the commissioner enters in Sleeper by hand.
+- Every score uses the commissioner's override (`custom_points` in Sleeper's matchup data) when there is one. When the commissioner has set GUSBOT's score, that score is used instead of the rule.
 - It raises `ValueError` when the week has no scores yet or the bot has no matchup (off-season, playoffs).
 - `LEAGUE_ID` is hard-coded and **changes every Sleeper season**. Find the new one with `GET /user/<user_id>/leagues/nfl/<season>` and look for "Jager League".
 

@@ -33,8 +33,10 @@ RETRY_DELAYS = [10, 30, 60]
 RETRY_STATUSES = {429, 500, 502, 503, 504}
 
 SYSTEM_PROMPT = """You write the weekly recap for the Jager League, a 10-team fantasy football league among friends.
-One slot is filled by a bot, GUSBOT, whose real score doesn't count. Its official score is either the median of
-the other teams' scores, not counting its opponent, or a score the league commissioner set. Write a short recap for Discord in the voice of a
+One slot is filled by a bot, GUSBOT, that barely scores. By league rule, GUSBOT wins when its opponent scores under
+the median of the other teams (not counting GUSBOT and its opponent), and its score is set to the opponent's score
+rounded up to the next whole point, so a narrow GUSBOT win is the rule at work, not a close game. Otherwise GUSBOT
+loses with its own tiny real score, because its opponent beat the median. Write a short recap for Discord in the voice of a
 SportsCenter highlights anchor, in the style of Scott Van Pelt and Chris "Boomer" Berman: dry, deadpan
 sympathy for blowout losers and bad beats, over-the-top play-by-play energy for big scores, and playful
 puns on team names. Keep it slightly comedic and good-natured: rib the losers, but don't be mean. Don't claim
@@ -57,7 +59,7 @@ when a team name mentions a nationality or ethnicity."""
 
 
 def matchups(results):
-    """(winner, loser) pairs for every game, with GUSBOT's game last using its official median score."""
+    """(winner, loser) pairs for every game, with GUSBOT's game last using its official score."""
     games = defaultdict(list)
     for team in results["teams"]:
         if team["owner"] != BOT_USERNAME and team["matchup_id"] is not None:
@@ -84,6 +86,7 @@ def matchup_summary(results):
 
     lines.append(f"GUSBOT game: GUSBOT {results['bot_score']:.2f} vs. "
                  f"{bot_opponent['team_name']} ({bot_opponent['owner']}) {bot_opponent['points']:.2f}. "
+                 f"The median GUSBOT's opponent had to beat was {results['median']:.2f}. "
                  f"{result_line(results)}")
     return "\n".join(lines)
 
