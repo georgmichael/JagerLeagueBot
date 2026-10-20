@@ -27,9 +27,9 @@ Both scripts call the public Sleeper API (`https://api.sleeper.app/v1`) live. Th
 `weekly_report.py` imports from the calculator, sends a plain-text summary to an LLM to write the recap, and posts it to a Discord webhook. Notes:
 - By default it reports on Sleeper's current week minus 1. Sleeper moves to the next week once Monday night's game ends.
 - The LLM is any OpenAI-compatible chat completions API, set with `LLM_API_KEY`, `LLM_BASE_URL` and `LLM_MODEL`. The default is the Gemini API free tier (`gemini-3.8-flash`, key from Google AI Studio). GitHub Models was retired on July 30, 2026, so don't use it.
-- If there's no key or the LLM call fails, it posts the plain summary. The GUSBOT result line is always added by the code, not left to the model.
+- If there's no key or the LLM call fails, it posts the plain summary. With `--no-fallback`, it exits with an error and posts nothing. The GUSBOT result line is always added by the code, not left to the model.
 
 ## CI
 
 - `.github/workflows/ci.yml` runs `py_compile` on both scripts on push and PR. It only checks syntax.
-- `.github/workflows/weekly-report.yml` runs Tuesdays at 14:00 UTC and can also be run by hand with an optional `week`. It needs the repo secrets `LLM_API_KEY` and `DISCORD_WEBHOOK_URL`. The repo variables `LLM_BASE_URL` and `LLM_MODEL` are optional.
+- `.github/workflows/weekly-report.yml` runs Tuesdays at 07:00 UTC (2 a.m. EST, 3 a.m. EDT) and can also be run by hand with an optional `week`. It passes `--no-fallback` and reruns the script every 15 minutes for up to about 5.5 hours until the LLM writes the recap, so the plain summary is never posted from CI. It needs the repo secrets `LLM_API_KEY` and `DISCORD_WEBHOOK_URL`. The repo variables `LLM_BASE_URL` and `LLM_MODEL` are optional.
