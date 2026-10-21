@@ -1,5 +1,5 @@
 """Write the weekly Jager League recap with an LLM and post it to Discord, each matchup's recap followed by its manga,
-then the league standings.
+then the weekly awards, the league standings and GUSBOT's Hall of Shame.
 
 Any OpenAI-compatible chat completions API works for the recap. The default is the Gemini API.
 The manga are drawn by Nano Banana through the Gemini API, which needs a key from a project with billing.
@@ -22,8 +22,8 @@ from collections import defaultdict
 
 import requests
 
-from JagerLeagueBotScoreCalculator import (BOT_USERNAME, LEAGUE_ID, current_nfl_week, get_json, result_line, standings,
-                                           week_results)
+from JagerLeagueBotScoreCalculator import (BOT_USERNAME, LEAGUE_ID, current_nfl_week, get_json, result_line,
+                                           season_results, standings)
 
 DEFAULT_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai"
 DEFAULT_MODEL = "gemini-3.8-flash"
@@ -33,6 +33,14 @@ DISCORD_LIMIT = 2000
 # Seconds to wait before each retry when the model is overloaded or rate-limited
 RETRY_DELAYS = [10, 30, 60]
 RETRY_STATUSES = {429, 500, 502, 503, 504}
+# Positions each lineup slot takes. A slot not listed here takes only its own position.
+FLEX_SLOTS = {
+    "FLEX": {"RB", "WR", "TE"},
+    "WRRB_FLEX": {"RB", "WR"},
+    "REC_FLEX": {"WR", "TE"},
+    "SUPER_FLEX": {"QB", "RB", "WR", "TE"},
+}
+NON_LINEUP_SLOTS = {"BN", "IR", "TAXI"}
 
 SYSTEM_PROMPT = """You write the weekly recap for the Jager League, a 10-team fantasy football league among friends.
 One slot is filled by a bot, GUSBOT, that barely scores. By league rule, GUSBOT wins when its opponent scores under
@@ -83,19 +91,23 @@ def matchups(results):
 
 
 def fetch_players():
-    """Sleeper's player ID -> "Name (POS)", or {} when the download fails, so the report goes out without player stats."""
+    """Sleeper's player ID -> {"name": "Name (POS)", "positions": [...]}, or {} when the download fails, so the report
+    goes out without player stats."""
     try:
         players = get_json("/players/nfl")
     except requests.RequestException as error:
         print(f"Couldn't fetch the player list, leaving out player stats: {error}", file=sys.stderr)
         return {}
-    return {player_id: f"{player.get('first_name', '')} {player.get('last_name', '')} ({player.get('position')})".strip()
-            for player_id, player in players.items()}
+    return {player_id: {
+        "name": f"{player.get('first_name', '')} {player.get('last_name', '')} ({player.get('position')})".strip(),
+        "positions": set(player.get("fantasy_positions") or [player.get("position")]),
+    } for player_id, player in players.items()}
 
 
 def best_and_worst(team, players):
     """The team's best and worst starter as a sentence for the model, or "" without player data."""
-    starters = [(players[player_id], points) for player_id, points in team.get("starters", []) if player_id in players]
+    starters = [(players[player_id]["name"], points) for player_id, points in team.get("starters", [])
+                if player_id in players]
     if not starters:
         return ""
     best = max(starters, key=lambda starter: starter[1])
@@ -124,14 +136,92 @@ def matchup_lines(results, players):
     return lines
 
 
-def standings_table(records, week):
-    """The standings as a Discord code block, so the columns line up."""
-    rows = [f"{'#':>2}  {'Team':<24} {'W-L':>5}"]
+def best_lineup_points(team, players, roster_positions):
+    """The most points the team could have scored with its best possible lineup in hindsight."""
+    available = sorted(((points, players[player_id]["positions"])
+                        for player_id, points in team["players_points"].items() if player_id in players),
+                       key=lambda player: player[0], reverse=True)
+    slots = [slot for slot in roster_positions if slot not in NON_LINEUP_SLOTS]
+    # Fill single-position slots before flex slots, so a flex slot doesn't take a player a fixed slot needed
+    total = 0.0
+    for slot in sorted(slots, key=lambda slot: slot in FLEX_SLOTS):
+        eligible = FLEX_SLOTS.get(slot, {slot})
+        pick = next((player for player in available if player[1] & eligible), None)
+        if pick:
+            available.remove(pick)
+            total += pick[0]
+    return total
+
+
+def weekly_awards(results, players, roster_positions):
+    """The week's awards. GUSBOT's game is left out, since its score is set by the league rule."""
+    teams = [team for team in results["teams"]
+             if team is not results["bot"] and team is not results["opponent"] and team["matchup_id"] is not None]
+    others = [team for team in results["teams"] if team is not results["bot"]]
+    games = [(winner, loser) for winner, loser in matchups(results)[:-1]]
+    margin = lambda game: game[0]["points"] - game[1]["points"]
+
+    top = max(others, key=lambda team: team["points"])
+    bottom = min(others, key=lambda team: team["points"])
+    blowout = max(games, key=margin)
+    closest = min(games, key=margin)
+    unlucky = max((loser for _, loser in games), key=lambda team: team["points"])
+    lucky = min((winner for winner, _ in games), key=lambda team: team["points"])
+
+    lines = [
+        f"**🏆 Week {results['week']} Awards**",
+        f"🔥 **Top score:** {top['team_name']} with {top['points']:.2f}",
+        f"🧊 **Lowest score:** {bottom['team_name']} with {bottom['points']:.2f}",
+        f"💥 **Biggest blowout:** {blowout[0]['team_name']} over {blowout[1]['team_name']} by {margin(blowout):.2f}",
+        f"😬 **Closest game:** {closest[0]['team_name']} over {closest[1]['team_name']} by {margin(closest):.2f}",
+        f"🍀 **Luckiest win:** {lucky['team_name']} won with just {lucky['points']:.2f}",
+        f"💔 **Unluckiest loss:** {unlucky['team_name']} lost with {unlucky['points']:.2f}",
+    ]
+    if players and roster_positions:
+        left_on_bench = []
+        for team in others:
+            started = sum(points for _, points in team["starters"])
+            left_on_bench.append((best_lineup_points(team, players, roster_positions) - started, team))
+        points, team = max(left_on_bench, key=lambda entry: entry[0])
+        if points > 0:
+            lines.append(f"🪑 **Bench blunder:** {team['team_name']} left {points:.2f} points on the bench")
+    return "\n".join(lines)
+
+
+def streak(record):
+    """The current streak, like "W3", or "" before any games."""
+    if not record["results"]:
+        return ""
+    last = record["results"][-1]
+    length = len(record["results"]) - len("".join(record["results"]).rstrip(last))
+    return f"{last}{length}"
+
+
+def standings_table(season):
+    """The standings as a Discord code block, with each team's streak and its move since last week."""
+    records = standings(season)
+    last_rank = {record["roster_id"]: rank for rank, record in enumerate(standings(season[:-1]), 1)}
+    rows = [f"{'#':>2}  {'Team':<24} {'W-L':>5} {'Strk':>4}"]
     for rank, record in enumerate(records, 1):
         name = "GUSBOT" if record["owner"] == BOT_USERNAME else record["team_name"]
         wins_losses = f"{record['wins']}-{record['losses']}" + (f"-{record['ties']}" if record["ties"] else "")
-        rows.append(f"{rank:>2}  {name[:24]:<24} {wins_losses:>5}")
-    return f"**Standings after Week {week}**\n```\n" + "\n".join(rows) + "\n```"
+        move = ""
+        if record["roster_id"] in last_rank:
+            change = last_rank[record["roster_id"]] - rank
+            move = f"▲{change}" if change > 0 else f"▼{-change}" if change < 0 else "–"
+        # The arrow goes last, since some fonts draw it wider than a column
+        rows.append(f"{rank:>2}  {name[:24]:<24} {wins_losses:>5} {streak(record):>4}  {move}".rstrip())
+    return f"**Standings after Week {season[-1]['week']}**\n```\n" + "\n".join(rows) + "\n```"
+
+
+def hall_of_shame(season):
+    """Everyone who has lost to GUSBOT this season, or "" when nobody has yet."""
+    losses = [f"Week {results['week']}: **{results['opponent']['team_name']}** ({results['opponent']['owner']}) "
+              f"lost {results['opponent']['points']:.2f} to {results['bot_score']:.2f}"
+              for results in season if results["bot_won"]]
+    if not losses:
+        return ""
+    return "**🤖 GUSBOT's Hall of Shame**\n" + "\n".join(losses)
 
 
 def score_line(winner, loser):
@@ -253,14 +343,19 @@ def main():
         return
 
     try:
-        results = week_results(LEAGUE_ID, week)
+        season = season_results(LEAGUE_ID, week)
     except ValueError as error:
         # Off-season, playoffs without GUSBOT, or a week with no scores
         print(f"Skipping report: {error}")
         return
 
-    lines = matchup_lines(results, fetch_players())
-    standings_post = standings_table(standings(LEAGUE_ID, week), week)
+    results = season[-1]
+    players = fetch_players()
+    lines = matchup_lines(results, players)
+    roster_positions = get_json(f"/league/{LEAGUE_ID}").get("roster_positions", [])
+    # The awards, then the standings with the Hall of Shame under them
+    closing_posts = [weekly_awards(results, players, roster_positions),
+                     "\n\n".join(filter(None, [standings_table(season), hall_of_shame(season)]))]
     headline, recaps = f"**Jager League: Week {week}**", lines
     api_key = os.environ.get("LLM_API_KEY")
     if api_key:
@@ -299,7 +394,8 @@ def main():
                 path = manga_dir / f"week{week}-matchup{number}.jpg"
                 path.write_bytes(image)
                 print(f"[manga: {path}]")
-        print(f"\n{standings_post}")
+        for content in closing_posts:
+            print(f"\n{content}")
         return
 
     webhook_url = os.environ.get("DISCORD_WEBHOOK_URL")
@@ -314,10 +410,11 @@ def main():
             post_to_discord(webhook_url, content, image)
         except requests.RequestException as error:
             print(f"Posting matchup failed for {content.splitlines()[0]}: {error}", file=sys.stderr)
-    try:
-        post_to_discord(webhook_url, standings_post)
-    except requests.RequestException as error:
-        print(f"Posting the standings failed: {error}", file=sys.stderr)
+    for content in closing_posts:
+        try:
+            post_to_discord(webhook_url, content)
+        except requests.RequestException as error:
+            print(f"Posting failed for {content.splitlines()[0]}: {error}", file=sys.stderr)
     print(f"Posted week {week} recap to Discord with {sum(image is not None for _, image in posts)} manga")
 
 
