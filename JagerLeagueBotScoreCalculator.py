@@ -54,6 +54,10 @@ def week_results(league, week):
             "team_name": (user.get("metadata") or {}).get("team_name") or user.get("display_name", "Unknown"),
             "points": team_points(matchup),
             "raw_points": float(matchup["points"] or 0),
+            # (player_id, points) for each starter. An empty slot has player_id "0".
+            "starters": [(player_id, float(points or 0)) for player_id, points
+                         in zip(matchup.get("starters") or [], matchup.get("starters_points") or [])
+                         if player_id != "0"],
         })
 
     if all(team["points"] == 0 for team in teams):
@@ -77,12 +81,45 @@ def week_results(league, week):
     return {
         "week": week,
         "teams": teams,
+        "bot": bot,
         "bot_score": bot_score,
         "median": median,
         "bot_actual_score": bot["raw_points"],
         "opponent": opponent,
         "bot_won": opponent["points"] < bot_score,
     }
+
+
+def standings(league, week):
+    """Every team's record through the week, best first, with GUSBOT's games scored by the league rule.
+
+    Worked out from each week's matchups rather than Sleeper's roster records, which can lag a day behind.
+    Ranked by wins, then points for, like Sleeper.
+    """
+    records = {}
+    for each_week in range(1, week + 1):
+        results = week_results(league, each_week)
+        games = {}
+        for team in results["teams"]:
+            points = results["bot_score"] if team is results["bot"] else team["points"]
+            record = records.setdefault(team["roster_id"], {"wins": 0, "losses": 0, "ties": 0, "points_for": 0.0})
+            # The latest week's name wins, so a renamed team shows its current name
+            record.update(team_name=team["team_name"], owner=team["owner"])
+            record["points_for"] += points
+            games.setdefault(team["matchup_id"], []).append((record, points))
+        for game in games.values():
+            if len(game) != 2:
+                continue
+            (a, a_points), (b, b_points) = game
+            if a_points == b_points:
+                a["ties"] += 1
+                b["ties"] += 1
+            else:
+                winner, loser = (a, b) if a_points > b_points else (b, a)
+                winner["wins"] += 1
+                loser["losses"] += 1
+    return sorted(records.values(), key=lambda record: (record["wins"] + record["ties"] / 2, record["points_for"]),
+                  reverse=True)
 
 
 def result_line(results):
