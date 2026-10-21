@@ -58,6 +58,9 @@ def week_results(league, week):
             "starters": [(player_id, float(points or 0)) for player_id, points
                          in zip(matchup.get("starters") or [], matchup.get("starters_points") or [])
                          if player_id != "0"],
+            # Points for every player on the roster, bench included
+            "players_points": {player_id: float(points or 0)
+                               for player_id, points in (matchup.get("players_points") or {}).items()},
         })
 
     if all(team["points"] == 0 for team in teams):
@@ -90,19 +93,25 @@ def week_results(league, week):
     }
 
 
-def standings(league, week):
-    """Every team's record through the week, best first, with GUSBOT's games scored by the league rule.
+def season_results(league, week):
+    """week_results() for every week from 1 through the given week."""
+    return [week_results(league, each_week) for each_week in range(1, week + 1)]
+
+
+def standings(season):
+    """Every team's record through the season so far (a list from season_results()), best first, with GUSBOT's
+    games scored by the league rule.
 
     Worked out from each week's matchups rather than Sleeper's roster records, which can lag a day behind.
-    Ranked by wins, then points for, like Sleeper.
+    Ranked by wins, then points for, like Sleeper. Each record's "results" lists "W", "L" or "T" for each week.
     """
     records = {}
-    for each_week in range(1, week + 1):
-        results = week_results(league, each_week)
+    for results in season:
         games = {}
         for team in results["teams"]:
             points = results["bot_score"] if team is results["bot"] else team["points"]
-            record = records.setdefault(team["roster_id"], {"wins": 0, "losses": 0, "ties": 0, "points_for": 0.0})
+            record = records.setdefault(team["roster_id"], {"roster_id": team["roster_id"], "wins": 0, "losses": 0,
+                                                            "ties": 0, "points_for": 0.0, "results": []})
             # The latest week's name wins, so a renamed team shows its current name
             record.update(team_name=team["team_name"], owner=team["owner"])
             record["points_for"] += points
@@ -112,12 +121,15 @@ def standings(league, week):
                 continue
             (a, a_points), (b, b_points) = game
             if a_points == b_points:
-                a["ties"] += 1
-                b["ties"] += 1
+                for record in (a, b):
+                    record["ties"] += 1
+                    record["results"].append("T")
             else:
                 winner, loser = (a, b) if a_points > b_points else (b, a)
                 winner["wins"] += 1
+                winner["results"].append("W")
                 loser["losses"] += 1
+                loser["results"].append("L")
     return sorted(records.values(), key=lambda record: (record["wins"] + record["ties"] / 2, record["points_for"]),
                   reverse=True)
 
